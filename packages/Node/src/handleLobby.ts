@@ -7,7 +7,7 @@ interface Player {
   id: string;
 }
 
-export function handlePlayerConnection() {
+export function handleLobby() {
   io.on("connection", (socket) => {
     socket.on("createLobby", createLobby);
     socket.on("joinLobby", joinLobby);
@@ -40,7 +40,7 @@ async function joinLobby(player: Player, lobbyId: string) {
     players.forEach((player: Player) => {
       io.to(player.id).emit("playerJoined", players);
     });
-    
+
   } catch (e) {
     console.log(e);
   }

@@ -1,5 +1,5 @@
 import { startServer } from "./server";
-import { handlePlayerConnection } from "./test";
+import { handleLobby } from "./handleLobby";
 
 startServer();
-handlePlayerConnection();
+handleLobby();
