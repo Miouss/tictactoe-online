@@ -1,5 +1,5 @@
 import { startServer } from "./server";
-import { handleLobby } from "./handleLobby";
+import { handleLobby } from "handlers";
 
 startServer();
 handleLobby();
