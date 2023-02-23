@@ -1,0 +1,1 @@
+export type LobbyAction = "create" | "join" | "leave";
