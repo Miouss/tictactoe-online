@@ -13,6 +13,10 @@ export function useLobbyListeners(
       setCurrentLobbyId(player.id);
     });
 
+    socket.on("lobbyFull", () => {
+      alert("Lobby is full");
+    });
+
     socket.on("lobbyAlreadyExists", () => {
       alert("Lobby already exists");
     });

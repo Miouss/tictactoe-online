@@ -1,6 +1,6 @@
 // lobby
 
-export * from "./lobby/createLobby";
-export * from "./lobby/joinLobby";
-export * from "./lobby/leaveLobby";
-export * from "./lobby/copyLobbyId";
+export * from "./Lobby/createLobby";
+export * from "./Lobby/joinLobby";
+export * from "./Lobby/leaveLobby";
+export * from "./Lobby/copyLobbyId";

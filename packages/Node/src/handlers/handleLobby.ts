@@ -29,19 +29,24 @@ async function createLobby(player: Player) {
 
 async function joinLobby(player: Player, lobbyId: string) {
   try {
-    const players = await readLobbyFile(lobbyId);
+    const playersInLobby = await readLobbyFile(lobbyId);
 
-    if (getPlayerBy("id", player.id, players))
+    const isLobbyFull = playersInLobby.length >= 2;
+    if (isLobbyFull) return io.to(player.id).emit("lobbyFull");
+
+    const isPlayerAlreadyInLobby = getPlayerBy("id", player.id, playersInLobby);
+    if (isPlayerAlreadyInLobby)
       return io.to(player.id).emit("playerAlreadyJoined");
-    if (getPlayerBy("name", player.name, players))
-      return io.to(player.id).emit("playerNameTaken");
 
-    players.push(player);
+    const isPlayerNameTaken = getPlayerBy("name", player.name, playersInLobby);
+    if (isPlayerNameTaken) return io.to(player.id).emit("playerNameTaken");
 
-    updateLobbyFile(lobbyId, players);
+    playersInLobby.push(player);
 
-    players.forEach((player: Player) => {
-      io.to(player.id).emit("playerJoined", players, lobbyId);
+    updateLobbyFile(lobbyId, playersInLobby);
+
+    playersInLobby.forEach((player: Player) => {
+      io.to(player.id).emit("playerJoined", playersInLobby, lobbyId);
     });
   } catch (e) {
     io.to(player.id).emit("LobbyNotFound");
@@ -50,8 +55,8 @@ async function joinLobby(player: Player, lobbyId: string) {
 
 async function leaveLobby(currentPlayer: Player, lobbyId: string) {
   try {
-    const players: Player[] = await readLobbyFile(lobbyId);
-    const updatedPlayers = players.filter(
+    const playersInLobby: Player[] = await readLobbyFile(lobbyId);
+    const updatedPlayers = playersInLobby.filter(
       (player) => player.id !== currentPlayer.id
     );
 
@@ -62,7 +67,7 @@ async function leaveLobby(currentPlayer: Player, lobbyId: string) {
       io.to(player.id).emit("anotherPlayerLeft", updatedPlayers);
     });
 
-    io.to(currentPlayer.id).emit("playerLeft", players);
+    io.to(currentPlayer.id).emit("playerLeft", playersInLobby);
   } catch (e) {
     console.log(e);
   }
