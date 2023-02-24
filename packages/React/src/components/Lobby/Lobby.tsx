@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { LobbyFormCreateSession as FormCreateSession } from "./LobbyFormCreateSession";
 import { LobbyFormJoinLobby as FormJoinLobby } from "./LobbyFormJoinLobby";
 import { LobbyActionButtonCreateLobby as ActionButtonCreateLobby } from "./LobbyActionButtonCreateLobby";
 import { LobbyActionButtonLeaveLobby as ActionButtonLeaveLobby } from "./LobbyActionButtonLeaveLobby";
 import { LobbyPlayersList as PlayersList } from "./LobbyPlayersList";
 import { socket } from "../../main";
-import { useLobbyListeners, usePlayerSide } from "../../hooks";
+import { useLobbyListeners } from "../../hooks";
 import { createLobby, joinLobby, leaveLobby } from "../../utils";
 import { Container, Actions } from "../../styles";
-import { Player, LobbyAction } from "@types";
+import { Player, LobbyAction, PlayerSide } from "@types";
 
-export function Lobby() {
+interface Props {
+  setPlayerSide: Dispatch<SetStateAction<PlayerSide | undefined>>;
+}
+
+export function Lobby({ setPlayerSide }: Props) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<Player>();
   const [joinedLobbyId, setjoinedLobbyId] = useState("");
-  const { setPlayerSide } = usePlayerSide();
 
   const hasJoinedLobby = joinedLobbyId;
 

@@ -1,13 +1,15 @@
 import { useState } from "react";
 import { CrossIcon, CircleIcon } from "../../assets";
 import { Square } from "../../styles";
-import { usePlayerSide } from "../../hooks";
+import { PlayerSide } from "@types";
 
-export function TictactoeBoardSquare() {
+interface Props {
+  playerSide: PlayerSide | undefined;
+}
+
+export function TictactoeBoardSquare({ playerSide }: Props) {
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
-
-  const { playerSide } = usePlayerSide();
 
   const Sign = playerSide === "X" ? CrossIcon : CircleIcon;
 

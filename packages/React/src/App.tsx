@@ -1,7 +1,9 @@
+import { useState } from "react";
 import { Tictactoe, Lobby } from "./components";
-import { PlayerSideProvider } from "./hooks";
+import { PlayerSide } from '@types';
 
 export default function App() {
+  const [playerSide, setPlayerSide] = useState<PlayerSide | undefined>(undefined);
   const style = {
     display: "flex",
     flexDirection: "column" as "column",
@@ -9,10 +11,8 @@ export default function App() {
   };
   return (
     <div style={style}>
-      <PlayerSideProvider>
-        <Tictactoe />
-        <Lobby />
-      </PlayerSideProvider>
+        <Tictactoe playerSide={playerSide} />
+        <Lobby setPlayerSide={setPlayerSide} />
     </div>
   );
 }

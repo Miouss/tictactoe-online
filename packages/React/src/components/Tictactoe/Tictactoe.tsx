@@ -1,16 +1,18 @@
 import { TicTacToe } from "../../styles";
 import { TictactoeBoard as Board } from "./TictactoeBoard";
-import { usePlayerSide } from "../../hooks";
+import { PlayerSide } from "@types";
 
-export function Tictactoe() {
-  const { playerSide } = usePlayerSide();
+interface Props {
+  playerSide: PlayerSide | undefined;
+}
+export function Tictactoe({ playerSide }: Props) {
   const isGameStarted = playerSide !== undefined;
 
   if (!isGameStarted) return null;
 
   return (
     <TicTacToe>
-      <Board />
+      <Board playerSide={playerSide} />
     </TicTacToe>
   );
 }
