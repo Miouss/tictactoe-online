@@ -5,12 +5,13 @@ import { Socket } from "socket.io-client";
 export function useLobbyListeners(
   socket: Socket,
   setPlayers: Dispatch<SetStateAction<Player[]>>,
-  setCurrentLobbyId: Dispatch<SetStateAction<string>>
+  setJoinedLobbyId: Dispatch<SetStateAction<string>>,
+  setPlayerSide: Dispatch<SetStateAction<"X" | "O" | undefined>>
 ) {
   useEffect(() => {
-    socket.on("lobbyCreated", (player: Player) => {
+    socket.on("lobbyCreated", (player: Player, lobbyId: string) => {
       setPlayers([player]);
-      setCurrentLobbyId(player.id);
+      setJoinedLobbyId(lobbyId);
     });
 
     socket.on("lobbyFull", () => {
@@ -35,12 +36,17 @@ export function useLobbyListeners(
 
     socket.on("anotherPlayerLeft", (playersInLobby: Player[]) => {
       setPlayers(playersInLobby);
-      setCurrentLobbyId(playersInLobby[0].id);
     });
 
-    socket.on("playerJoined", (playersInLobby: Player[], lobbyId: string) => {
-      setPlayers(playersInLobby);
-      setCurrentLobbyId(lobbyId);
-    });
+    socket.on(
+      "playerJoined",
+      (playersInLobby: Player[], lobbyId: string, position: 0 | 1) => {
+        console.log(position);
+        const side = position ? "O" : "X";
+        setPlayers(playersInLobby);
+        setJoinedLobbyId(lobbyId);
+        setPlayerSide(side);
+      }
+    );
   }, []);
 }

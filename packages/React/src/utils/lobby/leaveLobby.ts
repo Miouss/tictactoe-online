@@ -7,13 +7,15 @@ export const leaveLobby = async (
   currentPlayer: Player,
   currentLobbyId: string,
   setPlayers: Dispatch<SetStateAction<Player[]>>,
-  setCurrentLobbyId: Dispatch<SetStateAction<string>>
+  setCurrentLobbyId: Dispatch<SetStateAction<string>>,
+  setPlayerSide: Dispatch<SetStateAction<"X" | "O" | undefined>>
 ) => {
   await new Promise((res) => {
     socket.emit("leaveLobby", currentPlayer, currentLobbyId);
     socket.on("playerLeft", () => {
       setPlayers([]);
       setCurrentLobbyId("");
+      setPlayerSide(undefined);
       res;
     });
   });

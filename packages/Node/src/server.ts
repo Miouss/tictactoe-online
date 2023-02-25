@@ -1,4 +1,5 @@
 import express from "express";
+import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
@@ -15,6 +16,8 @@ export const io = new Server(httpServer, {
 
 export function startServer() {
   app.use(cors());
+  app.use(bodyParser.urlencoded({ extended: true }));
+  app.use(bodyParser.json());
   app.get("/test", (req, res) => {
     res.send("pong");
   });

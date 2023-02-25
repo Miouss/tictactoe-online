@@ -36,7 +36,8 @@ export function Lobby({ setPlayerSide }: Props) {
         currentPlayer!,
         joinedLobbyId,
         setPlayers,
-        setjoinedLobbyId
+        setjoinedLobbyId,
+        setPlayerSide
       );
 
     switch (action) {
@@ -49,17 +50,7 @@ export function Lobby({ setPlayerSide }: Props) {
     }
   };
 
-  useLobbyListeners(socket, setPlayers, setjoinedLobbyId);
-
-  useEffect(() => {
-    if (joinedLobbyId) {
-      const isLobbyOwner = joinedLobbyId === currentPlayer?.id;
-      const isLobbyFull = players.length === 2;
-      if (isLobbyFull) setPlayerSide(isLobbyOwner ? "X" : "O");
-    } else {
-      setPlayerSide(undefined);
-    }
-  }, [joinedLobbyId, players]);
+  useLobbyListeners(socket, setPlayers, setjoinedLobbyId, setPlayerSide);
 
   return (
     <Container>

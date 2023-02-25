@@ -1,12 +1,7 @@
 import { io } from "../server";
-import {
-  getPlayerBy,
-  createLobbyFile,
-  readLobbyFile,
-  updateLobbyFile,
-} from "@utils";
-
+import { getPlayerBy } from "@utils";
 import { Player } from "@types";
+import { Lobby } from "../database";
 
 export function handleLobby() {
   io.on("connection", (socket) => {
@@ -18,56 +13,68 @@ export function handleLobby() {
 
 async function createLobby(player: Player) {
   try {
-    await readLobbyFile(player.id);
-    io.to(player.id).emit("lobbyAlreadyExists");
+    const { id } = await Lobby.create({ players: player });
+    console.log("Lobby created");
+
+    io.to(player.id).emit("lobbyCreated", player, id);
   } catch (e) {
-    console.log("Lobby not found, creating new lobby");
-    await createLobbyFile(player);
-    io.to(player.id).emit("lobbyCreated", player);
+    console.log(e);
   }
 }
 
-async function joinLobby(player: Player, lobbyId: string) {
+async function joinLobby(joiningPlayer: Player, lobbyId: string) {
   try {
-    const playersInLobby = await readLobbyFile(lobbyId);
+    const lobby = await Lobby.findById(lobbyId);
+    if (!lobby) throw "Lobby not found";
+    const players = lobby.players as Player[];
 
-    const isLobbyFull = playersInLobby.length >= 2;
-    if (isLobbyFull) return io.to(player.id).emit("lobbyFull");
+    const isLobbyFull = players.length === 2;
+    if (isLobbyFull) return io.to(joiningPlayer.id).emit("lobbyFull");
 
-    const isPlayerAlreadyInLobby = getPlayerBy("id", player.id, playersInLobby);
+    const isPlayerAlreadyInLobby = getPlayerBy("id", joiningPlayer.id, players);
     if (isPlayerAlreadyInLobby)
-      return io.to(player.id).emit("playerAlreadyJoined");
+      return io.to(joiningPlayer.id).emit("playerAlreadyJoined");
 
-    const isPlayerNameTaken = getPlayerBy("name", player.name, playersInLobby);
-    if (isPlayerNameTaken) return io.to(player.id).emit("playerNameTaken");
+    const isPlayerNameTaken = getPlayerBy("name", joiningPlayer.name, players);
+    if (isPlayerNameTaken)
+      return io.to(joiningPlayer.id).emit("playerNameTaken");
 
-    playersInLobby.push(player);
+    lobby.players.push(joiningPlayer);
+    await lobby.save();
+    console.log("Player added to lobby");
 
-    updateLobbyFile(lobbyId, playersInLobby);
-
-    playersInLobby.forEach((player: Player) => {
-      io.to(player.id).emit("playerJoined", playersInLobby, lobbyId);
+    players.forEach((player: Player, index) => {
+      console.log(player);
+      io.to(player.id).emit("playerJoined", players, lobbyId, index as 0 | 1);
     });
   } catch (e) {
-    io.to(player.id).emit("LobbyNotFound");
+    io.to(joiningPlayer.id).emit("LobbyNotFound");
   }
 }
 
 async function leaveLobby(currentPlayer: Player, lobbyId: string) {
   try {
-    const playersInLobby: Player[] = await readLobbyFile(lobbyId);
-    const updatedPlayers = playersInLobby.filter(
-      (player) => player.id !== currentPlayer.id
-    );
+    const filter = { _id: lobbyId };
+    const update = { $pull: { players: currentPlayer } };
+    const options = { new: true };
 
-    const changeOwner = currentPlayer.id === lobbyId;
-    updateLobbyFile(lobbyId, updatedPlayers, changeOwner);
+    let lobby = await Lobby.findByIdAndUpdate(filter, update, options);
+    if (!lobby) throw "Lobby not found";
 
-    updatedPlayers.forEach((player: Player) => {
-      io.to(player.id).emit("anotherPlayerLeft", updatedPlayers);
-    });
+    const isLobbyEmpty = lobby.players.length === 0;
 
-    io.to(currentPlayer.id).emit("playerLeft", playersInLobby);
+    if (isLobbyEmpty) {
+      await lobby.delete();
+      console.log("Lobby deleted");
+    } else {
+      console.log("Player removed from lobby");
+      const remainingPlayer = lobby.players as Player[];
+      remainingPlayer.forEach((player: Player) => {
+        io.to(player.id).emit("anotherPlayerLeft", remainingPlayer);
+      });
+    }
+
+    io.to(currentPlayer.id).emit("playerLeft");
   } catch (e) {
     console.log(e);
   }
