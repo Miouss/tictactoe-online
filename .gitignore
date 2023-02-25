@@ -1,3 +1,5 @@
 node_modules/
 dist/
 packages/Node/src/assets/lobbies/*
+packages/Node/.env
+routes.rest
