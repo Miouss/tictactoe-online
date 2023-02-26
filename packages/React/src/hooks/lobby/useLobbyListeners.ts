@@ -6,7 +6,7 @@ export function useLobbyListeners(
   socket: Socket,
   setPlayers: Dispatch<SetStateAction<Player[]>>,
   setJoinedLobbyId: Dispatch<SetStateAction<string>>,
-  setPlayerSide: Dispatch<SetStateAction<"X" | "O" | undefined>>
+  setPlayerSign: Dispatch<SetStateAction<"X" | "O" | undefined>>
 ) {
   useEffect(() => {
     socket.on("lobbyCreated", (player: Player, lobbyId: string) => {
@@ -41,10 +41,10 @@ export function useLobbyListeners(
     socket.on(
       "playerJoined",
       (playersInLobby: Player[], lobbyId: string, position: 0 | 1) => {
-        const side = position ? "O" : "X";
+        const sign = position ? "O" : "X";
         setPlayers(playersInLobby);
         setJoinedLobbyId(lobbyId);
-        setPlayerSide(side);
+        setPlayerSign(sign);
       }
     );
   }, []);

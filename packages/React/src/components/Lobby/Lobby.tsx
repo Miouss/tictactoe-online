@@ -7,13 +7,13 @@ import { LobbyPlayersList as PlayersList } from "./LobbyPlayersList";
 import { socket } from "../../main";
 import { useLobbyListeners } from "../../hooks";
 import { Container, Actions } from "../../styles";
-import { Player, LobbyAction, PlayerSide } from "@types";
+import { Player, LobbyAction, PlayerSign } from "@types";
 
 interface Props {
-  setPlayerSide: Dispatch<SetStateAction<PlayerSide | undefined>>;
+  setPlayerSign: Dispatch<SetStateAction<PlayerSign | undefined>>;
 }
 
-export function Lobby({ setPlayerSide }: Props) {
+export function Lobby({ setPlayerSign }: Props) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<Player>();
   const [joinedLobbyId, setJoinedLobbyId] = useState("");
@@ -35,7 +35,7 @@ export function Lobby({ setPlayerSide }: Props) {
         socket.on("playerLeft", () => {
           setPlayers([]);
           setJoinedLobbyId("");
-          setPlayerSide(undefined);
+          setPlayerSign(undefined);
           res(true);
         });
       });
@@ -51,7 +51,7 @@ export function Lobby({ setPlayerSide }: Props) {
     }
   };
 
-  useLobbyListeners(socket, setPlayers, setJoinedLobbyId, setPlayerSide);
+  useLobbyListeners(socket, setPlayers, setJoinedLobbyId, setPlayerSign);
 
   return (
     <Container>

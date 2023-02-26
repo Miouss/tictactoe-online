@@ -1,9 +1,9 @@
 import { useState } from "react";
 import { Tictactoe, Lobby } from "./components";
-import { PlayerSide } from '@types';
+import { PlayerSign } from '@types';
 
 export default function App() {
-  const [playerSide, setPlayerSide] = useState<PlayerSide | undefined>(undefined);
+  const [playerSign, setPlayerSign] = useState<PlayerSign | undefined>(undefined);
   const style = {
     display: "flex",
     flexDirection: "column" as "column",
@@ -11,8 +11,8 @@ export default function App() {
   };
   return (
     <div style={style}>
-        <Tictactoe playerSide={playerSide} />
-        <Lobby setPlayerSide={setPlayerSide} />
+        {playerSign && <Tictactoe playerSign={playerSign} />}
+        <Lobby setPlayerSign={setPlayerSign} />
     </div>
   );
 }

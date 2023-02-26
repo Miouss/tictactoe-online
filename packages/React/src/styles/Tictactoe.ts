@@ -6,18 +6,21 @@ export const TicTacToe = styled("div")({
   alignItems: "center",
 });
 
-export const Board = styled("div")({
+export const Board = styled("div", {
+  shouldForwardProp: (prop) => prop !== "playing",
+})(({ playing }: { playing: boolean }) => ({
   display: "grid",
   gridTemplateColumns: "repeat(3, 1fr)",
   gridGap: "1px",
-});
+  pointerEvents: playing ? "unset" : "none",
+}));
 
 export const Square = styled("div", {
-  shouldForwardProp: (prop) => prop !== "confirmed",
-})(({ confirmed }: { confirmed: boolean }) => ({
+  shouldForwardProp: (prop) => prop !== "played",
+})(({ played }: { played: boolean }) => ({
   width: "50px",
   height: "50px",
-  background: confirmed ? "lightgray" : "black",
+  background: played ? "lightgray" : "black",
   "&:hover": {
     background: "lightgray",
     cursor: "pointer",

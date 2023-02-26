@@ -14,10 +14,10 @@ export function LobbyPlayersList({ joinedLobbyId, players, currentPlayer }: Prop
   const [hasCopiedLobbyId, setHasCopiedLobbyId] = useState(false);
 
   const generatePlayersContainers = () => {
-    return players.map((player) => (
+    return players.map((player, index) => (
       <li key={player.id}>
         {player.name} {player.name === currentPlayer?.name && "(You)"}{" "}
-        {player.id === joinedLobbyId && <OwnerIcon fontSize={"1.3rem"} />}
+        {index === 0 && <OwnerIcon fontSize={"1.3rem"} />}
       </li>
     ));
   };
