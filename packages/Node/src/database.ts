@@ -21,16 +21,31 @@ const player = new mongoose.Schema({
 });
 
 const lobby = new mongoose.Schema({
-  players: [player, player],
+  players: {
+    type: [player],
+    length: 2,
+  },
 });
 
 export const Lobby = mongoose.model("Lobby", lobby);
 
 const account = new mongoose.Schema({
-  name: String,
-  password: String,
-  email: String,
-  friends: Array,
+  name: {
+    type: String,
+    required: true,
+  },
+  password: {
+    type: String,
+    required: true,
+  },
+  email: {
+    type: String,
+    required: false,
+  },
+  friends: {
+    type: [mongoose.SchemaTypes.ObjectId],
+    required: false,
+  },
 });
 
 export const Account = mongoose.model("Account", account);
