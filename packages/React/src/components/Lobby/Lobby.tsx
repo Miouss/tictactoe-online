@@ -1,4 +1,4 @@
-import { Dispatch, SetStateAction, useEffect, useState } from "react";
+import { Dispatch, SetStateAction, useState } from "react";
 import { LobbyFormCreateSession as FormCreateSession } from "./LobbyFormCreateSession";
 import { LobbyFormJoinLobby as FormJoinLobby } from "./LobbyFormJoinLobby";
 import { LobbyActionButtonCreateLobby as ActionButtonCreateLobby } from "./LobbyActionButtonCreateLobby";
@@ -6,7 +6,6 @@ import { LobbyActionButtonLeaveLobby as ActionButtonLeaveLobby } from "./LobbyAc
 import { LobbyPlayersList as PlayersList } from "./LobbyPlayersList";
 import { socket } from "../../main";
 import { useLobbyListeners } from "../../hooks";
-import { createLobby, joinLobby, leaveLobby } from "../../utils";
 import { Container, Actions } from "../../styles";
 import { Player, LobbyAction, PlayerSide } from "@types";
 
@@ -17,11 +16,11 @@ interface Props {
 export function Lobby({ setPlayerSide }: Props) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [currentPlayer, setCurrentPlayer] = useState<Player>();
-  const [joinedLobbyId, setjoinedLobbyId] = useState("");
+  const [joinedLobbyId, setJoinedLobbyId] = useState("");
 
   const hasJoinedLobby = joinedLobbyId;
 
-  const lobbyAction = (
+  const lobbyAction = async (
     action: LobbyAction,
     e?: React.FormEvent<HTMLFormElement>
   ) => {
@@ -30,27 +29,29 @@ export function Lobby({ setPlayerSide }: Props) {
     const joiningLobbyId = e?.currentTarget.lobbyId.value;
     const isJoiningOwnLobby = joiningLobbyId === joinedLobbyId;
 
-    if (hasJoinedLobby && !isJoiningOwnLobby)
-      leaveLobby(
-        socket,
-        currentPlayer!,
-        joinedLobbyId,
-        setPlayers,
-        setjoinedLobbyId,
-        setPlayerSide
-      );
+    if (hasJoinedLobby && !isJoiningOwnLobby) {
+      await new Promise((res) => {
+        socket.emit("leaveLobby", currentPlayer, joinedLobbyId);
+        socket.on("playerLeft", () => {
+          setPlayers([]);
+          setJoinedLobbyId("");
+          setPlayerSide(undefined);
+          res(true);
+        });
+      });
+    }
 
     switch (action) {
       case "create":
-        createLobby(socket, currentPlayer!);
+        socket.emit("createLobby", currentPlayer);
         break;
       case "join":
-        joinLobby(socket, currentPlayer!, joiningLobbyId);
+        socket.emit("joinLobby", currentPlayer, joiningLobbyId);
         break;
     }
   };
 
-  useLobbyListeners(socket, setPlayers, setjoinedLobbyId, setPlayerSide);
+  useLobbyListeners(socket, setPlayers, setJoinedLobbyId, setPlayerSide);
 
   return (
     <Container>

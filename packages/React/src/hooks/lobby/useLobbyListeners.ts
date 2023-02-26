@@ -41,7 +41,6 @@ export function useLobbyListeners(
     socket.on(
       "playerJoined",
       (playersInLobby: Player[], lobbyId: string, position: 0 | 1) => {
-        console.log(position);
         const side = position ? "O" : "X";
         setPlayers(playersInLobby);
         setJoinedLobbyId(lobbyId);

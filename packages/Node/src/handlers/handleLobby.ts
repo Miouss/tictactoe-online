@@ -44,7 +44,6 @@ async function joinLobby(joiningPlayer: Player, lobbyId: string) {
     console.log("Player added to lobby");
 
     players.forEach((player: Player, index) => {
-      console.log(player);
       io.to(player.id).emit("playerJoined", players, lobbyId, index as 0 | 1);
     });
   } catch (e) {
