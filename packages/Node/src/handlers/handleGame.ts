@@ -9,6 +9,7 @@ export function handleGame() {
   io.on("connection", (socket) => {
     socket.on("makeMove", makeMove);
     socket.on("gameWin", declareWinner);
+    socket.on("replayGame", replayGame);
   });
 }
 
@@ -39,6 +40,21 @@ async function declareWinner(socketId: string) {
     const opponent = getPlayerNotMatching("id", socketId, players);
     io.to(socketId).emit("gameEnded", "win");
     io.to(opponent!.id).emit("gameEnded", "lose");
+  } catch (e) {
+    console.log(e);
+  }
+}
+
+async function replayGame(socketId: string){
+  try {
+    const lobby = await Lobby.findOne()
+      .where("players")
+      .elemMatch({ id: socketId });
+    if (!lobby) throw "Lobby not found";
+
+    const players = lobby.players as Player[];
+    const opponent = getPlayerNotMatching("id", socketId, players);
+    io.to(opponent!.id).emit("replayGame");
   } catch (e) {
     console.log(e);
   }
