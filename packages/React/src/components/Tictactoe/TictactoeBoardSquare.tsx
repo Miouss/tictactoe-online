@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { CrossIcon, CircleIcon } from "../../assets";
-import { Square } from "../../styles";
+import { Square, fullSize } from "../../styles";
 import { PlayerSign, squareId } from "@types";
 
 import { socket } from "../../main";
@@ -11,7 +11,7 @@ interface Props {
 }
 
 export function TictactoeBoardSquare({ playerSign, squareId }: Props) {
-  const [isPlayed, setIsPlayed] = useState(false);
+  const [isPlayedByPlayer, setIsPlayedByPlayer] = useState(false);
   const [isPlayedByOpponent, setIsPlayedByOpponent] = useState(false);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -28,26 +28,23 @@ export function TictactoeBoardSquare({ playerSign, squareId }: Props) {
   };
 
   socket.on("moveMade", (socketId: string, squareIdPlayed: squareId) => {
-    if(squareIdPlayed !== squareId) return;
-    if (socket.id === socketId) setIsPlayed(true);
+    if (squareIdPlayed !== squareId) return;
+    if (socket.id === socketId) setIsPlayedByPlayer(true);
     else setIsPlayedByOpponent(true);
   });
 
-  const fullSize = {
-    width: "100%",
-    height: "100%",
-  };
-
   return (
     <Square
-      played={isPlayed || isPlayedByOpponent}
+      played={isPlayedByPlayer || isPlayedByOpponent}
       onClick={handleMove}
       onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
     >
       {isPlayedByOpponent && <OpponentSign style={fullSize} />}
 
-      {((isPlayed || isHovered) && !isPlayedByOpponent) && <Sign style={fullSize} />}
+      {(isPlayedByPlayer || isHovered) && !isPlayedByOpponent && (
+        <Sign style={fullSize} />
+      )}
     </Square>
   );
 }

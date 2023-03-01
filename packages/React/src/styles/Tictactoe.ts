@@ -1,29 +1,42 @@
 import styled from "@emotion/styled";
+import { flexRow, flexCenter, flexColumn, size } from "./shorthands";
 
 export const TicTacToe = styled("div")({
-  display: "flex",
-  justifyContent: "center",
-  alignItems: "center",
+  ...flexRow,
+  ...flexCenter
 });
 
 export const Board = styled("div", {
   shouldForwardProp: (prop) => prop !== "playing",
 })(({ playing }: { playing: boolean }) => ({
-  display: "grid",
-  gridTemplateColumns: "repeat(3, 1fr)",
-  gridGap: "1px",
-  pointerEvents: playing ? "unset" : "none",
+  display             : "grid",
+  gridTemplateColumns : "repeat(3, 1fr)",
+  gridGap             : "1px",
+  pointerEvents       : playing ? "unset" : "none",
 }));
 
 export const Square = styled("div", {
   shouldForwardProp: (prop) => prop !== "played",
 })(({ played }: { played: boolean }) => ({
-  width: "50px",
-  height: "50px",
-  background: played ? "lightgray" : "black",
-  pointerEvents: played ? "none" : "unset",
+  ...size("50px", "50px"),
+  
+  background          : played ? "lightgray" : "black",
+  pointerEvents       : played ? "none" : "unset",
   "&:hover": {
-    background: "lightgray",
-    cursor: "pointer",
+    background        : "lightgray",
+    cursor            : "pointer",
   },
+}));
+
+export const GameStatus = styled("div", {
+  shouldForwardProp: (prop) => prop !== "hidden",
+})(({ hidden }: { hidden: boolean }) => ({
+  ...flexColumn,
+  ...flexCenter,
+
+  position            : "absolute",
+  visibility          : hidden ? "hidden" : "visible",
+  transform           : "translateY(-100%)",
+  paddingBottom       : "1rem",
+  alignSelf           : "center",
 }));

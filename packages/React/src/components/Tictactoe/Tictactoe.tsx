@@ -1,8 +1,9 @@
 import { useEffect, useState } from "react";
-import { TicTacToe, Board } from "../../styles";
+import { TicTacToe, Board, GameStatus } from "../../styles";
 import { TictactoeBoardSquare as Square } from "./TictactoeBoardSquare";
 import { PlayerSign, squareId } from "@types";
 import { socket } from "../../main";
+import { isGameWin } from "../../utils";
 
 type GameIssue = "running" | "win" | "lose";
 type ResetSquares = boolean | "pending";
@@ -16,7 +17,11 @@ export function Tictactoe({ playerSign }: Props) {
   const [gameIssue, setGameIssue] = useState<GameIssue>("running");
   const [squaresStates, setSquaresStates] = useState(Array(9).fill(null));
   const [resetSquares, setResetSquares] = useState<ResetSquares>("pending");
+
   const opponentSign = playerSign === "X" ? "O" : "X";
+  const isGameRunning = gameIssue === "running";
+  const isGameRunningAndCanPlay = canPlay && isGameRunning;
+
   const squares = () =>
     Array(9)
       .fill(null)
@@ -54,11 +59,6 @@ export function Tictactoe({ playerSign }: Props) {
   });
 
   useEffect(() => {
-    if (gameIssue === "running") return;
-    alert(`You ${gameIssue} the game!`);
-  }, [gameIssue]);
-
-  useEffect(() => {
     if (isGameWin(squaresStates, playerSign)) {
       socket.emit("gameWin", socket.id);
     }
@@ -86,39 +86,16 @@ export function Tictactoe({ playerSign }: Props) {
 
   return (
     <>
-      {gameIssue !== "running" && isGameOwner && (
-        <button onClick={replayGame}>Replay ?</button>
-      )}
+      <GameStatus hidden={isGameRunning}>
+        <h3>{`You ${gameIssue} the game!`}</h3>
+        {isGameOwner && <button onClick={replayGame}>Replay ?</button>}
+      </GameStatus>
 
       <TicTacToe>
-        <Board playing={canPlay && gameIssue === "running"}>
+        <Board playing={isGameRunningAndCanPlay}>
           {resetSquares === "pending" && squares()}
         </Board>
       </TicTacToe>
     </>
-  );
-}
-
-function isGameWin(squaresStates: any[], playerSign: PlayerSign) {
-  const winningCombinations = [
-    [0, 1, 2],
-    [3, 4, 5],
-    [6, 7, 8],
-    [0, 3, 6],
-    [1, 4, 7],
-    [2, 5, 8],
-    [0, 4, 8],
-    [2, 4, 6],
-  ];
-
-  const playerSignsPos = squaresStates.reduce((acc: any[], curr, i) => {
-    if (curr === playerSign) acc.push(i);
-    return acc;
-  }, []);
-
-  return winningCombinations.some((winningCombination) =>
-    winningCombination.every((winningPos) =>
-      playerSignsPos.includes(winningPos)
-    )
   );
 }
