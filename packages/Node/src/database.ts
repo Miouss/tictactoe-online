@@ -30,7 +30,7 @@ const lobby = new mongoose.Schema({
 export const Lobby = mongoose.model("Lobby", lobby);
 
 const account = new mongoose.Schema({
-  name: {
+  username: {
     type: String,
     required: true,
   },
@@ -40,7 +40,7 @@ const account = new mongoose.Schema({
   },
   email: {
     type: String,
-    required: false,
+    required: true,
   },
   friends: {
     type: [mongoose.SchemaTypes.ObjectId],

@@ -1,5 +1,4 @@
-// Lobby
 export * from "./Lobby/Lobby";
-
-// Tictactoe
 export * from "./Tictactoe/Tictactoe";
+export * from "./Signup/Signup";
+

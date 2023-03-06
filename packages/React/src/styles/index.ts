@@ -6,3 +6,6 @@ export * from "./Lobby";
 
 // Shorthands
 export * from "./shorthands";
+
+// Signup
+export * from "./Signup";

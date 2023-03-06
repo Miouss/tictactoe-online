@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { Tictactoe, Lobby } from "./components";
+import { Tictactoe, Lobby, Signup } from "./components";
 import { PlayerSign } from '@types';
 
 export default function App() {
@@ -11,8 +11,9 @@ export default function App() {
   };
   return (
     <div style={style}>
-        {playerSign && <Tictactoe playerSign={playerSign} />}
-        <Lobby setPlayerSign={setPlayerSign} />
+      <Signup />
+       {/*  {playerSign && <Tictactoe playerSign={playerSign} />}
+        <Lobby setPlayerSign={setPlayerSign} /> */}
     </div>
   );
 }

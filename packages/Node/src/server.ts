@@ -3,6 +3,7 @@ import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
+import { handleAccountCreation } from "@handlers";
 
 const app = express();
 const httpServer = createServer(app);
@@ -18,9 +19,8 @@ export function startServer() {
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
-  app.get("/test", (req, res) => {
-    res.send("pong");
-  });
+
+  app.post("/api/create-account", handleAccountCreation);
 
   httpServer.listen(port);
 }
