@@ -4,6 +4,7 @@ import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
 import { handleAccountCreation } from "@handlers";
+import { handleLogin } from "handlers/handleLogin";
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,6 +22,7 @@ export function startServer() {
   app.use(bodyParser.json());
 
   app.post("/api/create-account", handleAccountCreation);
+  app.post("/api/login", handleLogin)
 
   httpServer.listen(port);
 }

@@ -6,7 +6,7 @@ export const SignupContainer = styled("div")({
     gap               : "2rem",
 });
 
-export const ButtonCreateAccount = styled("button")({
+export const Button = styled("button")({
 });
 
 export const ConditionalContainer = styled("div", {

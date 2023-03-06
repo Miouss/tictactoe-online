@@ -11,7 +11,7 @@ export async function handleAccountCreation(req: Request, res: Response) {
   const { username, password, email } = req.body as unknown as AccountBody;
 
   try {
-    const isAccountAvailable = await findAccount(username);
+    const isAccountAvailable = await findAccount(username) ? true : false;
 
     if (isAccountAvailable) {
       res.status(400).send("Account already exists");
@@ -40,5 +40,5 @@ export async function addAccountToDatabase(
 
 export async function findAccount(username: string) {
   const account = await Account.findOne().where("username").equals(username);
-  return account ? true : false;
+  return account;
 }
