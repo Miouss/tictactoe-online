@@ -1,6 +1,6 @@
 import { io } from "../server";
 import { getPlayerBy } from "@utils";
-import { Player } from "@types";
+import { LobbyDoc, Player } from "@types";
 import { Lobby } from "../database";
 
 export function handleLobby() {
@@ -53,28 +53,37 @@ async function joinLobby(joiningPlayer: Player, lobbyId: string) {
 
 async function leaveLobby(currentPlayer: Player, lobbyId: string) {
   try {
-    const filter = { _id: lobbyId };
-    const update = { $pull: { players: currentPlayer } };
-    const options = { new: true };
+    const lobby = await removePlayerFromLobby(currentPlayer, lobbyId);
 
-    let lobby = await Lobby.findByIdAndUpdate(filter, update, options);
-    if (!lobby) throw "Lobby not found";
-
-    const isLobbyEmpty = lobby.players.length === 0;
-
-    if (isLobbyEmpty) {
-      await lobby.delete();
-      console.log("Lobby deleted");
-    } else {
-      console.log("Player removed from lobby");
-      const remainingPlayer = lobby.players as Player[];
-      remainingPlayer.forEach((player: Player) => {
-        io.to(player.id).emit("anotherPlayerLeft", remainingPlayer);
-      });
-    }
+    await handleNewLobbySize(lobby);
 
     io.to(currentPlayer.id).emit("playerLeft");
   } catch (e) {
-    console.log(e);
+    console.error(e);
   }
+}
+
+async function handleNewLobbySize(lobby: LobbyDoc) {
+  const isLobbyEmpty = lobby.players.length === 0;
+
+  if (isLobbyEmpty) {
+    await lobby.delete();
+    console.log("Lobby deleted");
+  } else {
+    const opponent = lobby.players[0] as Player;
+    io.to(opponent.id).emit("opponentLeft", opponent);
+  }
+}
+
+async function removePlayerFromLobby(currentPlayer: Player, lobbyId: string) {
+  const filter = { _id: lobbyId };
+  const update = { $pull: { players: currentPlayer } };
+  const options = { new: true };
+
+  const lobby = await Lobby.findByIdAndUpdate(filter, update, options);
+  if (!lobby) throw "Lobby not found";
+
+  console.log("Player removed from lobby");
+
+  return lobby;
 }

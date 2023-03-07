@@ -3,8 +3,7 @@ dotenv.config();
 
 import { startServer } from "./server";
 import { connectToDatabase } from "./database";
-import { handleLobby } from "handlers";
-import { handleGame } from "./handlers/handleGame";
+import { handleLobby, handleGame } from "@handlers";
 
 startServer();
 connectToDatabase();

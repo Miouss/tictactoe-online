@@ -34,8 +34,10 @@ export function useLobbyListeners(
       alert("Player name taken");
     });
 
-    socket.on("anotherPlayerLeft", (playersInLobby: Player[]) => {
-      setPlayers(playersInLobby);
+    socket.on("opponentLeft", (remainingPlayer: Player) => {
+      setPlayers([remainingPlayer]);
+      setPlayerSign(undefined);
+      alert("The opponent left the lobby");
     });
 
     socket.on(

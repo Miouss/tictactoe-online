@@ -3,8 +3,7 @@ import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
 import cors from "cors";
-import { handleAccountCreation } from "@handlers";
-import { handleLogin } from "handlers/handleLogin";
+import { accountCreation, login } from "@controllers";
 
 const app = express();
 const httpServer = createServer(app);
@@ -21,8 +20,8 @@ export function startServer() {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
-  app.post("/api/create-account", handleAccountCreation);
-  app.post("/api/login", handleLogin)
+  app.post("/api/create-account", accountCreation);
+  app.post("/api/login", login);
 
   httpServer.listen(port);
 }

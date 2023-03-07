@@ -1,4 +1,4 @@
-import { useRef, useState } from "react";
+import { Dispatch, SetStateAction, useRef, useState } from "react";
 import {
   SignupContainer as Container,
   Button,
@@ -11,12 +11,22 @@ import {
   ConditionalContainer,
 } from "../../styles";
 
-export function Signup() {
+export function Signup({
+  setPlayerName,
+}: {
+  setPlayerName: Dispatch<SetStateAction<string>>;
+}) {
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
 
   const [isCreatingAccount, setIsCreatingAccount] = useState(false);
   const [isLoggingIn, setIsLoggingIn] = useState(false);
+
+  const getCredentials = (event: React.FormEvent<HTMLFormElement>) => ({
+    username: event.currentTarget.username.value,
+    password: event.currentTarget.password.value,
+    email: event.currentTarget.email?.value,
+  });
 
   const validatePassword = () => {
     if (passwordRef.current?.value !== passwordConfirmRef.current?.value) {
@@ -32,9 +42,7 @@ export function Signup() {
     const method = "POST";
     const headers = { "Content-Type": "application/json" };
 
-    const username = event.currentTarget.username.value;
-    const password = event.currentTarget.password.value;
-    const email = event.currentTarget.email.value;
+    const { username, password, email } = getCredentials(event);
 
     const body = JSON.stringify({
       username,
@@ -45,7 +53,12 @@ export function Signup() {
     const url = "http://localhost:3001/api/create-account";
     const options = { method, headers, body };
 
-    fetchToDatabase(url, options);
+    try {
+      const data = await fetchToDatabase(url, options);
+      alert(`Account created for ${username}!`);
+    } catch (error: any) {
+      alert(`Error ${error.status}: ${error.message}`);
+    }
   };
 
   const login = async (event: React.FormEvent<HTMLFormElement>) => {
@@ -54,8 +67,7 @@ export function Signup() {
     const method = "POST";
     const headers = { "Content-Type": "application/json" };
 
-    const username = event.currentTarget.username.value;
-    const password = event.currentTarget.password.value;
+    const { username, password } = getCredentials(event);
 
     const body = JSON.stringify({
       username,
@@ -65,22 +77,23 @@ export function Signup() {
     const url = "http://localhost:3001/api/login";
     const options = { method, headers, body };
 
-    fetchToDatabase(url, options);
+    try {
+      const data = await fetchToDatabase(url, options);
+
+      setPlayerName(username);
+    } catch (error: any) {
+      alert(`Error ${error.status}: ${error.message}`);
+    }
   };
 
   const fetchToDatabase = async (url: string, options: RequestInit) => {
-    try {
-      const response = await fetch(url, options);
+    const response = await fetch(url, options);
 
-      const responseText = await response.text();
-      const alertMessage = response.ok
-        ? responseText
-        : `Error ${response.status}: ${responseText}`;
+    const data = await response.json();
 
-      alert(alertMessage);
-    } catch (error) {
-      console.log(error);
-    }
+    if (!response.ok) throw { status: response.status, message: data.message };
+
+    return data;
   };
 
   return (

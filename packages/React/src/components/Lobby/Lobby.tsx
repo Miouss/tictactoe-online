@@ -1,5 +1,4 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { LobbyFormCreateSession as FormCreateSession } from "./LobbyFormCreateSession";
 import { LobbyFormJoinLobby as FormJoinLobby } from "./LobbyFormJoinLobby";
 import { LobbyActionButtonCreateLobby as ActionButtonCreateLobby } from "./LobbyActionButtonCreateLobby";
 import { LobbyActionButtonLeaveLobby as ActionButtonLeaveLobby } from "./LobbyActionButtonLeaveLobby";
@@ -10,15 +9,22 @@ import { Container, Actions } from "../../styles";
 import { Player, LobbyAction, PlayerSign } from "@types";
 
 interface Props {
+  playerName: string;
   setPlayerSign: Dispatch<SetStateAction<PlayerSign | undefined>>;
 }
 
-export function Lobby({ setPlayerSign }: Props) {
+export function Lobby({ playerName, setPlayerSign }: Props) {
   const [players, setPlayers] = useState<Player[]>([]);
-  const [currentPlayer, setCurrentPlayer] = useState<Player>();
   const [joinedLobbyId, setJoinedLobbyId] = useState("");
 
-  const hasJoinedLobby = joinedLobbyId;
+  const currentPlayer: Player = {
+    name: playerName,
+    id: socket.id,
+  };
+
+  console.log(currentPlayer);
+
+  const hasJoinedLobby = joinedLobbyId !== "";
 
   const lobbyAction = async (
     action: LobbyAction,
@@ -62,19 +68,13 @@ export function Lobby({ setPlayerSign }: Props) {
       />
 
       <Actions>
-        {currentPlayer ? (
-          <>
-            <label>{currentPlayer.name}</label>
-            {hasJoinedLobby ? (
-              <ActionButtonLeaveLobby lobbyAction={lobbyAction} />
-            ) : (
-              <ActionButtonCreateLobby lobbyAction={lobbyAction} />
-            )}
-            <FormJoinLobby lobbyAction={lobbyAction} />
-          </>
+        <label>{currentPlayer.name}</label>
+        {hasJoinedLobby ? (
+          <ActionButtonLeaveLobby lobbyAction={lobbyAction} />
         ) : (
-          <FormCreateSession setCurrentPlayer={setCurrentPlayer} />
+          <ActionButtonCreateLobby lobbyAction={lobbyAction} />
         )}
+        <FormJoinLobby lobbyAction={lobbyAction} />
       </Actions>
     </Container>
   );

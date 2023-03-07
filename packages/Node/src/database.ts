@@ -1,3 +1,4 @@
+import { LobbyDoc, Player } from "@types";
 import mongoose from "mongoose";
 
 export async function connectToDatabase() {
@@ -15,12 +16,12 @@ export async function connectToDatabase() {
   }
 }
 
-const player = new mongoose.Schema({
+const player = new mongoose.Schema<Player>({
   name: String,
   id: String,
 });
 
-const lobby = new mongoose.Schema({
+const lobby = new mongoose.Schema<LobbyDoc>({
   players: {
     type: [player],
     length: 2,

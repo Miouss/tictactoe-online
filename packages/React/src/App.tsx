@@ -1,9 +1,14 @@
 import { useState } from "react";
 import { Tictactoe, Lobby, Signup } from "./components";
-import { PlayerSign } from '@types';
+import { PlayerSign } from "@types";
 
 export default function App() {
-  const [playerSign, setPlayerSign] = useState<PlayerSign | undefined>(undefined);
+  const [playerName, setPlayerName] = useState("");
+  const [playerSign, setPlayerSign] = useState<PlayerSign>();
+
+  const isPlayerConnected = playerName !== "";
+  const isGameStarted = playerSign !== undefined;
+
   const style = {
     display: "flex",
     flexDirection: "column" as "column",
@@ -11,9 +16,14 @@ export default function App() {
   };
   return (
     <div style={style}>
-      <Signup />
-       {/*  {playerSign && <Tictactoe playerSign={playerSign} />}
-        <Lobby setPlayerSign={setPlayerSign} /> */}
+      {isPlayerConnected ? (
+        <>
+          {isGameStarted && <Tictactoe playerSign={playerSign} />}
+          <Lobby playerName={playerName} setPlayerSign={setPlayerSign} />
+        </>
+      ) : (
+        <Signup setPlayerName={setPlayerName} />
+      )}
     </div>
   );
 }
