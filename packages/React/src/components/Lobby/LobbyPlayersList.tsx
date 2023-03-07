@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { copyLobbyId } from "../../utils";
-import { useSwitchLobbyIdCopyContainer } from "../../hooks";
+import { useSwitchCopyLobbyIdIcon } from "../../hooks";
 import { CopyIcon, CopyDoneIcon, OwnerIcon } from "../../assets";
 import { Player } from "@types";
 
@@ -10,31 +10,35 @@ interface Props {
   currentPlayer: Player | undefined;
 }
 
-export function LobbyPlayersList({ joinedLobbyId, players, currentPlayer }: Props) {
+export function LobbyPlayersList({
+  joinedLobbyId,
+  players,
+  currentPlayer,
+}: Props) {
+  if (!joinedLobbyId) return null;
+
   const [hasCopiedLobbyId, setHasCopiedLobbyId] = useState(false);
 
-  const generatePlayersContainers = () => {
-    return players.map((player, index) => (
-      <li key={player.id}>
-        {player.name} {player.name === currentPlayer?.name && "(You)"}{" "}
-        {index === 0 && <OwnerIcon fontSize={"1.3rem"} />}
-      </li>
-    ));
-  };
+  const generatePlayersContainers = () =>
+    players.map((player, index) => {
+      const isCurrentPlayer = player.name === currentPlayer!.name;
+      const isLobbyOwner = index === 0;
 
-  const handleCopy = () => {
-    copyLobbyId(joinedLobbyId, setHasCopiedLobbyId);
-  };
+      return (
+        <li key={player.id}>
+          {player.name} {isCurrentPlayer && "(You)"}{" "}
+          {isLobbyOwner && <OwnerIcon fontSize={"1.3rem"} />}
+        </li>
+      );
+    });
 
-  useSwitchLobbyIdCopyContainer(hasCopiedLobbyId, setHasCopiedLobbyId);
-
-  if (!joinedLobbyId) return null;
+  useSwitchCopyLobbyIdIcon(hasCopiedLobbyId, setHasCopiedLobbyId);
 
   return (
     <div>
       <div>Lobby Id : {joinedLobbyId}</div>
       <button
-        onClick={handleCopy}
+        onClick={() => copyLobbyId(joinedLobbyId, setHasCopiedLobbyId)}
         style={{ width: "100%", marginTop: "0.5rem" }}
       >
         {hasCopiedLobbyId ? (
