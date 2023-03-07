@@ -1,15 +1,20 @@
 import styled from "@emotion/styled";
-import { flexColumn } from "./shorthands";
+import { flexColumn, flexRow } from "./shorthands";
 
 export const SignupContainer = styled("div")({
     ...flexColumn,
     gap               : "2rem",
 });
 
+export const SignupActions = styled("div")({
+    ...flexRow,
+    gap: "1rem",
+});
+
 export const Button = styled("button")({
 });
 
-export const ConditionalContainer = styled("div", {
+export const ConditionnalSubMenu = styled("div", {
     shouldForwardProp: (prop) => prop !== "display",
 })(({displayed} : {displayed: boolean}) => ({
     display: displayed ? "block" : "none",
