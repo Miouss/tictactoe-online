@@ -1,6 +1,6 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
 
-export function useSwitchLobbyIdCopyContainer(
+export function useSwitchCopyLobbyIdIcon(
   hasCopiedLobbyId: boolean,
   setHasCopiedLobbyId: Dispatch<SetStateAction<boolean>>
 ) {
