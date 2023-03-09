@@ -1,8 +1,8 @@
 import express from "express";
+import cors from "cors";
 import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Server } from "socket.io";
-import cors from "cors";
 import { accountCreation, login } from "@controllers";
 
 const app = express();
