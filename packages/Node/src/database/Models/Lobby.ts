@@ -6,7 +6,7 @@ const player = new mongoose.Schema<Player>({
   id: String,
 });
 
-const lobby = new mongoose.Schema<LobbyDoc>({
+export const lobby = new mongoose.Schema<LobbyDoc>({
   players: {
     type: [player],
     length: 2,
