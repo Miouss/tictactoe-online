@@ -4,6 +4,7 @@ import { Player } from "@types";
 import { getPlayerBy } from "@utils";
 
 export async function joinLobby(joiningPlayer: Player, lobbyId: string) {
+  console.log(joiningPlayer);
   try {
     const lobby = await Lobby.findById(lobbyId);
     if (!lobby) throw "Lobby not found";

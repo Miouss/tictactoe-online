@@ -23,5 +23,12 @@ export function startServer() {
   app.post("/api/create-account", accountCreation);
   app.post("/api/login", login);
 
-  httpServer.listen(port);
+  httpServer.listen(port, () => {
+    console.log(`Server listening on port ${port}`);
+  });
+}
+
+export function stopServer() {
+  io.close();
+  httpServer.close();
 }
