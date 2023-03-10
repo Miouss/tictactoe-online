@@ -1,12 +1,14 @@
 import { Request, Response } from "express";
-import { addAccountToDatabase, findAccount } from "@middlewares";
+import { addAccountToDatabase, getAccountInDatabase } from "@middlewares";
 import { AccountBody } from "@types";
 
 export async function accountCreation(req: Request, res: Response) {
   const { username, password, email } = req.body as unknown as AccountBody;
 
   try {
-    const isAccountAvailable = (await findAccount(username)) ? true : false;
+    const isAccountAvailable = (await getAccountInDatabase(username))
+      ? true
+      : false;
 
     if (isAccountAvailable) {
       res.status(400).json({ message: "Account already exists" });

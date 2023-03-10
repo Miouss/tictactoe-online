@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { findAccount, getJWT } from "@middlewares";
+import { getAccountInDatabase, getJWT } from "@middlewares";
 import { LoginBody } from "@types";
 
 export async function login(req: Request, res: Response) {
   const { username, password } = req.body as unknown as LoginBody;
 
   try {
-    const account = await findAccount(username);
+    const account = await getAccountInDatabase(username);
 
     if (!account) {
       res.status(400).json({ message: "Account does not exist" });
