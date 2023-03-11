@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
-import { addAccountToDatabase, getAccountInDatabase } from "@middlewares";
+import { addAccountToDatabase, getAccountFromDatabase } from "@middlewares";
 import { AccountBody } from "@types";
 
 export async function accountCreation(req: Request, res: Response) {
   const { username, password, email } = req.body as unknown as AccountBody;
 
   try {
-    const isAccountAvailable = (await getAccountInDatabase(username))
+    const isAccountAvailable = (await getAccountFromDatabase(username))
       ? true
       : false;
 

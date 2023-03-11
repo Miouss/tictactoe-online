@@ -1,3 +1,3 @@
 export * from "./account/addAccountToDatabase";
-export * from "./account/getAccountInDatabase";
+export * from "./account/getAccountFromDatabase";
 export * from "./account/getJWT";
