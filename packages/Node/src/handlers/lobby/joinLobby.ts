@@ -4,18 +4,17 @@ import { Player } from "@types";
 import { getPlayerBy } from "@utils";
 
 export async function joinLobby(joiningPlayer: Player, lobbyId: string) {
-  console.log(joiningPlayer);
   try {
     const lobby = await Lobby.findById(lobbyId);
     if (!lobby) throw "Lobby not found";
     const players = lobby.players as Player[];
 
-    const isLobbyFull = players.length === 2;
-    if (isLobbyFull) return io.to(joiningPlayer.id).emit("lobbyFull");
-
     const isPlayerAlreadyInLobby = getPlayerBy("id", joiningPlayer.id, players);
     if (isPlayerAlreadyInLobby)
       return io.to(joiningPlayer.id).emit("playerAlreadyJoined");
+
+    const isLobbyFull = players.length === 2;
+    if (isLobbyFull) return io.to(joiningPlayer.id).emit("lobbyFull");
 
     const isPlayerNameTaken = getPlayerBy("name", joiningPlayer.name, players);
     if (isPlayerNameTaken)
