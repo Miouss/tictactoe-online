@@ -1,10 +1,9 @@
 import { joinLobby } from "./joinLobby";
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import { Socket } from "socket.io";
-import { startServer, getSocketConnection, stopServer } from "@server";
+import { startServer, stopServer, initializeSocketConnection } from "@server";
 import { Lobby } from "@database";
-import { createPlayer, wait } from "@utils";
-import { Player } from "@types";
+import { createLobby, createPlayers, resolveWhenSignalEmitted } from "@utils";
 
 describe("joinLobby", () => {
   let sockets: Socket[];
@@ -13,12 +12,7 @@ describe("joinLobby", () => {
 
   beforeAll(async () => {
     startServer();
-
-    sockets = await Promise.all(players.map(() => getSocketConnection()));
-
-    players.forEach((player, index) => {
-      player.id = sockets[index].id;
-    });
+    sockets = await initializeSocketConnection(sockets, players);
   });
 
   afterAll(() => {
@@ -33,6 +27,7 @@ describe("joinLobby", () => {
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmitted = await resolveWhenSignalEmitted(
+      joinLobby,
       socket,
       "lobbyFull",
       joiningPlayer
@@ -49,6 +44,7 @@ describe("joinLobby", () => {
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmitted = await resolveWhenSignalEmitted(
+      joinLobby,
       socket,
       "playerAlreadyJoined",
       joiningPlayer
@@ -65,6 +61,7 @@ describe("joinLobby", () => {
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmitted = await resolveWhenSignalEmitted(
+      joinLobby,
       socket,
       "playerNameTaken",
       joiningPlayer
@@ -81,8 +78,18 @@ describe("joinLobby", () => {
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmittedToAllPlayers = await Promise.all([
-      resolveWhenSignalEmitted(socket, "playerJoined", joiningPlayer),
-      resolveWhenSignalEmitted(sockets[0], "playerJoined", players[0]),
+      resolveWhenSignalEmitted(
+        joinLobby,
+        socket,
+        "playerJoined",
+        joiningPlayer
+      ),
+      resolveWhenSignalEmitted(
+        joinLobby,
+        sockets[0],
+        "playerJoined",
+        players[0]
+      ),
     ]);
 
     const hasSignalEmittedToAllPlayers = signalEmittedToAllPlayers.every(
@@ -99,6 +106,7 @@ describe("joinLobby", () => {
     mockLobbyFindByIdReturnValue(null);
 
     const signalEmitted = await resolveWhenSignalEmitted(
+      joinLobby,
       socket,
       "LobbyNotFound",
       joiningPlayer
@@ -109,34 +117,6 @@ describe("joinLobby", () => {
 });
 
 // utils
-
-function createPlayers(...names: string[]) {
-  return names.map((name) => createPlayer(name));
-}
-
-function createLobby(...players: Player[]) {
-  return {
-    players,
-    save() {
-      return true;
-    },
-  };
-}
-
-function resolveWhenSignalEmitted(
-  socket: Socket,
-  signal: string,
-  joiningPlayer: Player
-) {
-  return new Promise((resolve) => {
-    socket.on(signal, () => {
-      resolve(true);
-    });
-
-    joinLobby(joiningPlayer, "1");
-    wait(1000).then(() => resolve(false));
-  });
-}
 
 function mockLobbyFindByIdReturnValue(lobby: any) {
   vi.spyOn(Lobby, "findById").mockReturnValue(lobby as any);

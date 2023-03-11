@@ -1,27 +1,23 @@
 import { io } from "@server";
-import { LobbyDoc, Player } from "@types";
+import { Player } from "@types";
 import { removePlayerFromLobby } from "./removePlayerFromLobby";
 
-export async function leaveLobby(currentPlayer: Player, lobbyId: string) {
+export async function leaveLobby(leavingPlayer: Player, lobbyId: string) {
   try {
-    const lobby = await removePlayerFromLobby(currentPlayer, lobbyId);
+    const lobby = await removePlayerFromLobby(leavingPlayer, lobbyId);
+    console.log(lobby);
+    const isLobbyEmpty = lobby.players.length === 0;
 
-    await handleNewLobbySize(lobby);
+    if (isLobbyEmpty) {
+      await lobby.delete();
+      console.log("Lobby deleted");
+    } else {
+      const opponent = lobby.players[0] as Player;
+      io.to(opponent.id).emit("opponentLeft", opponent);
+    }
 
-    io.to(currentPlayer.id).emit("playerLeft");
+    io.to(leavingPlayer.id).emit("playerLeft");
   } catch (e) {
     console.error(e);
-  }
-}
-
-async function handleNewLobbySize(lobby: LobbyDoc) {
-  const isLobbyEmpty = lobby.players.length === 0;
-
-  if (isLobbyEmpty) {
-    await lobby.delete();
-    console.log("Lobby deleted");
-  } else {
-    const opponent = lobby.players[0] as Player;
-    io.to(opponent.id).emit("opponentLeft", opponent);
   }
 }
