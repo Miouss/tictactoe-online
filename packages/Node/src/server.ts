@@ -2,7 +2,8 @@ import express from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { createServer } from "http";
-import { Server } from "socket.io";
+import { Server, Socket } from "socket.io";
+import { io as client } from "socket.io-client";
 import { accountCreation, login } from "@controllers";
 
 const app = express();
@@ -26,6 +27,16 @@ export function startServer() {
   httpServer.listen(port, () => {
     console.log(`Server listening on port ${port}`);
   });
+}
+
+export async function getSocketConnection(): Promise<Socket> {
+  const socket = await new Promise((resolve) => {
+    const socket = client(`http://localhost:${port}`);
+
+    socket.on("connect", () => resolve(socket));
+  });
+
+  return socket as Socket;
 }
 
 export function stopServer() {
