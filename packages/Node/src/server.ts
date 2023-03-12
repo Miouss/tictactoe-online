@@ -7,9 +7,12 @@ import { io as client } from "socket.io-client";
 import { accountCreation, login } from "@controllers";
 import { Player } from "@types";
 
+import * as dotenv from "dotenv";
+dotenv.config();
+
 const app = express();
 const httpServer = createServer(app);
-const port = 3001;
+const { PORT } = process.env;
 
 export const io = new Server(httpServer, {
   cors: {
@@ -17,7 +20,7 @@ export const io = new Server(httpServer, {
   },
 });
 
-export function startServer() {
+export function startServer(port: string = PORT as string) {
   app.use(cors());
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
@@ -25,16 +28,17 @@ export function startServer() {
   app.post("/api/create-account", accountCreation);
   app.post("/api/login", login);
 
-  httpServer.listen(port, () => {
-    console.log(`Server listening on port ${port}`);
-  });
+  httpServer.listen(port, () =>
+    console.log(`Server listening on port ${port}`)
+  );
 }
 
 export async function initializeSocketConnection(
   sockets: Socket[],
-  players: Player[]
+  players: Player[],
+  port: string
 ) {
-  sockets = await Promise.all(players.map(() => getSocketConnection()));
+  sockets = await Promise.all(players.map(() => getSocketConnection(port)));
 
   players.forEach((player, index) => {
     player.id = sockets[index].id;
@@ -43,7 +47,7 @@ export async function initializeSocketConnection(
   return sockets;
 }
 
-async function getSocketConnection(): Promise<Socket> {
+async function getSocketConnection(port: string): Promise<Socket> {
   const socket = await new Promise((resolve) => {
     const socket = client(`http://localhost:${port}`);
 
@@ -53,7 +57,6 @@ async function getSocketConnection(): Promise<Socket> {
   return socket as Socket;
 }
 
-export function stopServer() {
+export function stopSockets() {
   io.close();
-  httpServer.close();
 }

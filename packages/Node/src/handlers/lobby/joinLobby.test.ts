@@ -1,7 +1,7 @@
 import { joinLobby } from "./joinLobby";
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import { Socket } from "socket.io";
-import { startServer, stopServer, initializeSocketConnection } from "@server";
+import { startServer, initializeSocketConnection, stopSockets } from "@server";
 import { Lobby } from "@database";
 import { createLobby, createPlayers, resolveWhenSignalEmitted } from "@utils";
 
@@ -11,12 +11,13 @@ describe("joinLobby", () => {
   const players = createPlayers("Miouss", "Samir", "Sonia", "Miouss");
 
   beforeAll(async () => {
-    startServer();
-    sockets = await initializeSocketConnection(sockets, players);
+    const port = "3002";
+    startServer(port);
+    sockets = await initializeSocketConnection(sockets, players, port);
   });
 
   afterAll(() => {
-    stopServer();
+    stopSockets();
   });
 
   it("should emit 'lobbyFull' to the joining player if the lobby joining is full", async () => {
@@ -25,7 +26,7 @@ describe("joinLobby", () => {
     const lobby = createLobby(players[0], players[1]);
 
     mockLobbyFindByIdReturnValue(lobby);
-
+    
     const signalEmitted = await resolveWhenSignalEmitted(
       joinLobby,
       socket,
@@ -77,23 +78,11 @@ describe("joinLobby", () => {
 
     mockLobbyFindByIdReturnValue(lobby);
 
-    const signalEmittedToAllPlayers = await Promise.all([
-      resolveWhenSignalEmitted(
-        joinLobby,
-        socket,
-        "playerJoined",
-        joiningPlayer
-      ),
-      resolveWhenSignalEmitted(
-        joinLobby,
-        sockets[0],
-        "playerJoined",
-        players[0]
-      ),
-    ]);
-
-    const hasSignalEmittedToAllPlayers = signalEmittedToAllPlayers.every(
-      (signal) => signal === true
+    const hasSignalEmittedToAllPlayers = await resolveWhenSignalEmitted(
+      joinLobby,
+      [socket, sockets[0]],
+      "playerJoined",
+      joiningPlayer
     );
 
     expect(hasSignalEmittedToAllPlayers).toBe(true);

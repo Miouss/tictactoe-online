@@ -4,7 +4,7 @@ import { Socket } from "socket.io";
 
 import { Player } from "@types";
 import { createLobby, createPlayers, resolveWhenSignalEmitted } from "@utils";
-import { initializeSocketConnection, startServer, stopServer } from "@server";
+import { initializeSocketConnection, startServer } from "@server";
 import { Lobby } from "@database";
 
 describe("leaveLobby", () => {
@@ -13,12 +13,13 @@ describe("leaveLobby", () => {
   const players = createPlayers("Miouss", "Samir", "Sonia", "Miouss");
 
   beforeAll(async () => {
-    startServer();
-    sockets = await initializeSocketConnection(sockets, players);
+    const port = "3003";
+    startServer(port);
+    sockets = await initializeSocketConnection(sockets, players, port);
   });
 
   afterAll(() => {
-    stopServer();
+    sockets.forEach((socket) => socket.disconnect());
   });
 
   it("should emit 'playerLeft' to the leaving player", async () => {
@@ -37,7 +38,7 @@ describe("leaveLobby", () => {
 
     expect(hasSignalEmitted).toBe(true);
   });
-  
+
   it("should delete the lobby if the leaving player is the last player in the lobby before leaving", async () => {
     const lobby = createLobby(players[0]);
     const leavingPlayer = players[0];

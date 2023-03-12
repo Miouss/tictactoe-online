@@ -7,6 +7,7 @@ export async function joinLobby(joiningPlayer: Player, lobbyId: string) {
   try {
     const lobby = await Lobby.findById(lobbyId);
     if (!lobby) throw "Lobby not found";
+
     const players = lobby.players as Player[];
 
     const isPlayerAlreadyInLobby = getPlayerBy("id", joiningPlayer.id, players);
@@ -21,6 +22,7 @@ export async function joinLobby(joiningPlayer: Player, lobbyId: string) {
       return io.to(joiningPlayer.id).emit("playerNameTaken");
 
     lobby.players.push(joiningPlayer);
+
     await lobby.save();
     console.log("Player added to lobby");
 
