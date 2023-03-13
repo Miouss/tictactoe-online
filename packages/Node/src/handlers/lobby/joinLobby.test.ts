@@ -1,7 +1,7 @@
 import { joinLobby } from "./joinLobby";
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import { Socket } from "socket.io";
-import { startServer, initializeSocketConnection, stopSockets } from "@server";
+import { initializeSocketConnection, stopServer } from "@server";
 import { Lobby } from "@database";
 import { createLobby, createPlayers, resolveWhenSignalEmitted } from "@utils";
 
@@ -11,13 +11,11 @@ describe("joinLobby", () => {
   const players = createPlayers("Miouss", "Samir", "Sonia", "Miouss");
 
   beforeAll(async () => {
-    const port = "3002";
-    startServer(port);
-    sockets = await initializeSocketConnection(sockets, players, port);
+    sockets = await initializeSocketConnection(sockets, players);
   });
 
-  afterAll(() => {
-    stopSockets();
+  afterAll(async () => {
+    await stopServer();
   });
 
   it("should emit 'lobbyFull' to the joining player if the lobby joining is full", async () => {
@@ -26,7 +24,7 @@ describe("joinLobby", () => {
     const lobby = createLobby(players[0], players[1]);
 
     mockLobbyFindByIdReturnValue(lobby);
-    
+
     const signalEmitted = await resolveWhenSignalEmitted(
       joinLobby,
       socket,

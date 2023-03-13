@@ -5,7 +5,7 @@ import { removePlayerFromLobby } from "./removePlayerFromLobby";
 export async function leaveLobby(leavingPlayer: Player, lobbyId: string) {
   try {
     const lobby = await removePlayerFromLobby(leavingPlayer, lobbyId);
-    console.log(lobby);
+
     const isLobbyEmpty = lobby.players.length === 0;
 
     if (isLobbyEmpty) {
