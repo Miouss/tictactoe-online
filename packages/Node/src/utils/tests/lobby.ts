@@ -1,9 +1,10 @@
+import { Socket } from "socket.io";
+import { createLobby, joinLobby, leaveLobby } from "@handlers";
 import { Player } from "@types";
 import { createPlayer, wait } from "@utils";
-import { Socket } from "socket.io";
 
 export function resolveWhenSignalEmitted(
-  lobbyFct: Function,
+  action: "createLobby" | "joinLobby" | "leaveLobby",
   sockets: Socket | Socket[],
   signal: string,
   player: Player
@@ -15,7 +16,18 @@ export function resolveWhenSignalEmitted(
       socketsList.map((socket) => listenToSignal(signal, socket))
     ).then(() => resolve(true));
 
-    lobbyFct(player, "1");
+    switch (action) {
+      case "createLobby":
+        createLobby(player);
+        break;
+      case "joinLobby":
+        joinLobby(player, "1");
+        break;
+      case "leaveLobby":
+        leaveLobby(player, "1");
+        break;
+    }
+
     wait(1000).then(() => resolve(false));
   });
 }
@@ -32,14 +44,14 @@ export function createPlayers(...names: string[]) {
   return names.map((name) => createPlayer(name));
 }
 
-export function createLobby(...players: Player[]) {
+export function createMockLobby(...players: Player[]) {
   return {
     players,
     save() {
-      return new Promise((resolve) => resolve(true));
+      return Promise.resolve;
     },
     delete() {
-      return new Promise((resolve) => resolve(true));
+      return Promise.resolve;
     },
   };
 }
