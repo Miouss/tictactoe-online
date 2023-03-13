@@ -14,4 +14,4 @@ jobs:
           node-version: 18
       - run: yarn install --immutable --immutable-cache --check-cache
       - run: cd packages/Node
-      - run: yarn test
+      - run: yarn vitest
