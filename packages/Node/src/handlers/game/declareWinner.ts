@@ -10,6 +10,8 @@ export async function declareWinner(socketId: string) {
       .elemMatch({ id: socketId });
     if (!lobby) throw "Lobby not found";
 
+    console.log(lobby);
+
     const players = lobby.players as Player[];
     const opponent = getPlayerNotMatching("id", socketId, players);
     io.to(socketId).emit("gameEnded", "win");
