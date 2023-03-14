@@ -2,16 +2,14 @@ import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import { Socket } from "socket.io";
 import { initializeSocketConnection, stopServer } from "@server";
 import { Lobby } from "@database";
-import {
-  createMockLobby,
-  createPlayers,
-  resolveWhenSignalEmitted,
-} from "@utils";
+import { mockLobby, mockPlayers, resolveWhenSignalEmitted } from "@utils";
+import { joinLobby } from "@handlers";
+import { Player } from "@types";
 
 describe("joinLobby", () => {
   let sockets: Socket[];
 
-  const players = createPlayers("Miouss", "Samir", "Sonia", "Miouss");
+  const players = mockPlayers("Miouss", "Samir", "Sonia", "Miouss");
 
   beforeAll(async () => {
     sockets = await initializeSocketConnection(sockets, players);
@@ -24,15 +22,14 @@ describe("joinLobby", () => {
   it("should emit 'lobbyFull' to the joining player if the lobby joining is full", async () => {
     const joiningPlayer = players[2];
     const socket = sockets[2];
-    const lobby = createMockLobby(players[0], players[1]);
+    const lobby = mockLobby(players[0], players[1]);
 
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmitted = await resolveWhenSignalEmitted(
-      "joinLobby",
+      () => joinLobby(joiningPlayer, lobby.id),
       socket,
-      "lobbyFull",
-      joiningPlayer
+      "lobbyFull"
     );
 
     expect(signalEmitted).toBe(true);
@@ -41,15 +38,14 @@ describe("joinLobby", () => {
   it("should emit 'playerAlreadyJoined' to the joining player if the player is already in the lobby", async () => {
     const joiningPlayer = players[0];
     const socket = sockets[0];
-    const lobby = createMockLobby(players[0], players[1]);
+    const lobby = mockLobby(players[0], players[1]);
 
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmitted = await resolveWhenSignalEmitted(
-      "joinLobby",
+      () => joinLobby(joiningPlayer, lobby.id),
       socket,
-      "playerAlreadyJoined",
-      joiningPlayer
+      "playerAlreadyJoined"
     );
 
     expect(signalEmitted).toBe(true);
@@ -58,15 +54,14 @@ describe("joinLobby", () => {
   it("should emit 'playerNameTaken' to the joining player if the player name is already taken", async () => {
     const joiningPlayer = players[3];
     const socket = sockets[3];
-    const lobby = createMockLobby(players[0]);
+    const lobby = mockLobby(players[0]);
 
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmitted = await resolveWhenSignalEmitted(
-      "joinLobby",
+      () => joinLobby(joiningPlayer, lobby.id),
       socket,
-      "playerNameTaken",
-      joiningPlayer
+      "playerNameTaken"
     );
 
     expect(signalEmitted).toBe(true);
@@ -75,15 +70,14 @@ describe("joinLobby", () => {
   it("should emit 'playerJoined' to all players in the lobby", async () => {
     const joiningPlayer = players[1];
     const socket = sockets[1];
-    const lobby = createMockLobby(players[0]);
+    const lobby = mockLobby(players[0]);
 
     mockLobbyFindByIdReturnValue(lobby);
 
     const hasSignalEmittedToAllPlayers = await resolveWhenSignalEmitted(
-      "joinLobby",
+      () => joinLobby(joiningPlayer, lobby.id),
       [socket, sockets[0]],
-      "playerJoined",
-      joiningPlayer
+      "playerJoined"
     );
 
     expect(hasSignalEmittedToAllPlayers).toBe(true);
@@ -96,10 +90,9 @@ describe("joinLobby", () => {
     mockLobbyFindByIdReturnValue(null);
 
     const signalEmitted = await resolveWhenSignalEmitted(
-      "joinLobby",
+      () => joinLobby(joiningPlayer, ""),
       socket,
-      "LobbyNotFound",
-      joiningPlayer
+      "LobbyNotFound"
     );
 
     expect(signalEmitted).toBe(true);
