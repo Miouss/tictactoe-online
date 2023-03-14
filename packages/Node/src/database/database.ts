@@ -9,7 +9,7 @@ export async function connectToDatabase() {
       `mongodb+srv://${DB_USERNAME}:${DB_PASSWORD}@${DB_CLUSTER}.mongodb.net/test`
     );
 
-    console.log("Connected to database");
+    console.log("Connected to daddtabase");
   } catch (e) {
     console.error(e);
   }
