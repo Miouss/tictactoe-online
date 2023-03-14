@@ -5,7 +5,7 @@ import { leaveLobby } from "./leaveLobby";
 
 export function handleLobby() {
   io.on("connection", (socket) => {
-    socket.on("createLobby", createLobby);
+    socket.on("createddLobby", createLobby);
     socket.on("joinLobby", joinLobby);
     socket.on("leaveLobby", leaveLobby);
   });
