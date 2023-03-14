@@ -14,7 +14,7 @@ describe("declareWinner", () => {
   beforeAll(async () => {
     sockets = await initializeSocketConnection(sockets, players);
   });
-
+console.log(sockets);
   afterAll(async () => {
     await stopServer();
   });
