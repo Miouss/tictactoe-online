@@ -12,6 +12,5 @@ jobs:
       - uses: actions/setup-node@v3
         with:
           node-version: 18
-      - uses: falti/dotenv-action@v1.0.4
       - run: yarn install --immutable --immutable-cache --check-cache
       - run: yarn vitest
