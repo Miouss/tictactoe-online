@@ -1,6 +1,5 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import { Socket } from "socket.io";
-
 import { Player } from "@types";
 import { mockLobby, mockPlayers, resolveWhenSignalEmitted } from "@utils";
 import { initializeSocketConnection, stopServer } from "@server";

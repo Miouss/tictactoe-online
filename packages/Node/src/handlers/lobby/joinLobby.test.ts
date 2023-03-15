@@ -4,7 +4,6 @@ import { initializeSocketConnection, stopServer } from "@server";
 import { Lobby } from "@database";
 import { mockLobby, mockPlayers, resolveWhenSignalEmitted } from "@utils";
 import { joinLobby } from "@handlers";
-import { Player } from "@types";
 
 describe("joinLobby", () => {
   let sockets: Socket[];

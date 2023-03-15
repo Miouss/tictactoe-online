@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll, beforeAll, vi } from "vitest";
 import { createLobby } from "./createLobby";
-import { initializeSocketConnection, io, stopServer } from "@server";
+import { initializeSocketConnection, stopServer } from "@server";
 import { mockPlayers, resolveWhenSignalEmitted } from "@utils";
 import { Socket } from "socket.io";
 import { Lobby } from "@database";
@@ -24,7 +24,7 @@ describe("createLobby", () => {
     const hasSignalEmitted = await resolveWhenSignalEmitted(
       () => createLobby(players[0]),
       sockets[0],
-      "lobbyCreated",
+      "lobbyCreated"
     );
 
     expect(hasSignalEmitted).toBe(true);
