@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { addAccountToDatabase, getAccountFromDatabase } from "@middlewares";
+import { addAccountToDatabase, getAccountFromDatabase } from "@models";
 import { AccountBody } from "@types";
 
 export async function accountCreation(req: Request, res: Response) {

@@ -10,7 +10,7 @@ export default defineConfig({
       "@handlers": path.resolve(__dirname, "./packages/Node/src/handlers"),
       "@utils": path.resolve(__dirname, "./packages/Node/src/utils"),
       "@types": path.resolve(__dirname, "./packages/Node/src/types"),
-      "@middlewares": path.resolve(__dirname, "./packages/Node/src/middlewares"),
+      "@models": path.resolve(__dirname, "./packages/Node/src/models"),
       "@controllers": path.resolve(__dirname, "./packages/Node/src/controllers"),
     },
   },

@@ -34,7 +34,7 @@
     "paths": {
       "@utils": ["utils"],
       "@types": ["types"],
-      "@middlewares": ["middlewares"],
+      "@models": ["models"],
       "@handlers": ["handlers"],
       "@controllers": ["controllers"],
       "@database": ["database"],

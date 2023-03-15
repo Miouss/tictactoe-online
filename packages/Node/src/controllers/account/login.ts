@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import { getAccountFromDatabase, getJWT } from "@middlewares";
+import { getAccountFromDatabase, getJWT } from "@models";
 import { LoginBody } from "@types";
 
 export async function login(req: Request, res: Response) {
