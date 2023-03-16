@@ -53,7 +53,10 @@ export function initializeServer() {
   });
 }
 
-export async function initializeSockets(sockets: Socket[], players: Player[]) {
+export async function initializeSockets(
+  sockets: Socket[],
+  players: Player[]
+) {
   const port = await startServer();
 
   sockets = await Promise.all(players.map(() => getSocketConnection(port)));
