@@ -14,7 +14,7 @@ export async function createAccount(event: React.FormEvent<HTMLFormElement>) {
     email,
   });
 
-  const url = "http://localhost:3001/api/create-account";
+  const url = "http://localhost:3001/api/account/create";
   const options = { method, headers, body };
 
   try {

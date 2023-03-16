@@ -7,32 +7,35 @@ export async function checkAccountDoublon(
   res: Response,
   next: NextFunction
 ) {
+  const { username } = req.body as AccountBody;
   try {
-    const { username } = req.body as unknown as AccountBody;
     const account = await getAccountFromDatabase(username);
-    throw new Error("Account already exists");
-    //if (account) throw new Error("Account already exists");
+
+    if (account) throw new Error("Account already exists");
 
     next();
-  } catch (err: any) {
+  } catch (err) {
     next(err);
   }
 }
 
-export function createUnconfirmedAccountToDatabase(
+export async function createUnconfirmedAccountToDatabase(
   req: Request,
   res: Response,
   next: NextFunction
 ) {
-  const { username, password, email } = req.body as unknown as AccountBody;
+  const { username, password, email } = req.body as AccountBody;
 
-  addAccountToDatabase(username, password, email);
-
-  next();
+  try {
+    await addAccountToDatabase(username, password, email);
+    next();
+  } catch (err) {
+    next(err);
+  }
 }
 
 export function sendConfirmationToken(req: Request, res: Response) {
-  const { username } = req.body as unknown as AccountBody;
+  const { username } = req.body as AccountBody;
 
   const token = getJWT(username);
 

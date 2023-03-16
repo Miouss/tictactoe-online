@@ -1,11 +1,11 @@
 import { Account } from "@database";
 
-export async function addAccountToDatabase(
+export function addAccountToDatabase(
   username: string,
   password: string,
   email: string
 ) {
-  await Account.create({
+  return Account.create({
     username,
     password,
     email,

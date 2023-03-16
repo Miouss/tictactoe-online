@@ -53,10 +53,7 @@ export function initializeServer() {
   });
 }
 
-export async function initializeSockets(
-  sockets: Socket[],
-  players: Player[]
-) {
+export async function initializeSockets(sockets: Socket[], players: Player[]) {
   const port = await startServer();
 
   sockets = await Promise.all(players.map(() => getSocketConnection(port)));
@@ -68,14 +65,12 @@ export async function initializeSockets(
   return sockets;
 }
 
-async function getSocketConnection(port: number): Promise<Socket> {
-  const socket = await new Promise((resolve) => {
+function getSocketConnection(port: number): Promise<Socket> {
+  return new Promise((resolve) => {
     const socket = client(`http://localhost:${port}`);
 
-    socket.on("connect", () => resolve(socket));
+    socket.on("connect", () => resolve(socket as unknown as Socket));
   });
-
-  return socket as Socket;
 }
 
 export async function stopServer() {
