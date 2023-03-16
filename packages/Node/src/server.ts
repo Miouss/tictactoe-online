@@ -8,6 +8,7 @@ import { Player } from "@types";
 import { account } from "@routes";
 
 import * as dotenv from "dotenv";
+import { wait } from "@utils";
 dotenv.config();
 
 const app = express();
@@ -26,7 +27,13 @@ export async function startServer(): Promise<number> {
 
   app.use("/api/account", account);
 
-  const port = await new Promise((resolve) => {
+  const port = await initializeServer();
+
+  return port as number;
+}
+
+export function initializeServer() {
+  return new Promise((resolve, reject) => {
     let currentPort = process.env.PORT as unknown as number;
 
     httpServer.listen(currentPort);
@@ -41,15 +48,12 @@ export async function startServer(): Promise<number> {
 
       httpServer.listen(currentPort);
     });
-  });
 
-  return port as number;
+    wait(5000).then(() => reject("Could not start server"));
+  });
 }
 
-export async function initializeSocketConnection(
-  sockets: Socket[],
-  players: Player[]
-) {
+export async function initializeSockets(sockets: Socket[], players: Player[]) {
   const port = await startServer();
 
   sockets = await Promise.all(players.map(() => getSocketConnection(port)));

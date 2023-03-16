@@ -1,6 +1,6 @@
 import { declareWinner } from "./declareWinner";
 import { describe, it, expect, beforeAll, afterAll, vi } from "vitest";
-import { initializeSocketConnection, io, stopServer } from "@server";
+import { initializeSockets, io, stopServer } from "@server";
 import { Player } from "@types";
 import { mockPlayers, mockLobby, resolveWhenSignalEmitted } from "@utils";
 import { Socket } from "socket.io";
@@ -12,7 +12,7 @@ describe("declareWinner", () => {
   const players: Player[] = mockPlayers("Miouss", "Samir");
 
   beforeAll(async () => {
-    sockets = await initializeSocketConnection(sockets, players);
+    sockets = await initializeSockets(sockets, players);
   });
 
   afterAll(async () => {

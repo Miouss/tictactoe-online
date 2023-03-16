@@ -1,6 +1,6 @@
 import { describe, it, expect, afterAll, beforeAll, vi } from "vitest";
 import { createLobby } from "./createLobby";
-import { initializeSocketConnection, stopServer } from "@server";
+import { initializeSockets, stopServer } from "@server";
 import { mockPlayers, resolveWhenSignalEmitted } from "@utils";
 import { Socket } from "socket.io";
 import { Lobby } from "@database";
@@ -11,7 +11,7 @@ describe("createLobby", () => {
   const players: Player[] = mockPlayers("Miouss");
 
   beforeAll(async () => {
-    sockets = await initializeSocketConnection(sockets, players);
+    sockets = await initializeSockets(sockets, players);
   });
 
   afterAll(async () => {
