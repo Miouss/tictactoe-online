@@ -4,7 +4,7 @@ interface IVerifyJWT {
   decodedToken: string | jwt.JwtPayload | null;
 }
 
-export function verifyJWT(token: string) {
+export function decodeJWT(token: string) {
   const { JWT_PRIVATE_KEY } = process.env;
 
   const decodedToken = jwt.verify(

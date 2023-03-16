@@ -15,4 +15,4 @@ export * from "./lobby/removePlayerFromLobby";
 export * from "./middlewares/account/addAccountToDatabase";
 export * from "./middlewares/account/getAccountFromDatabase";
 export * from "./middlewares/account/getJWT";
-export * from "./middlewares/account/verifyJWT";
+export * from "./middlewares/account/decodeJWT";

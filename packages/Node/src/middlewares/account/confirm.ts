@@ -1,20 +1,17 @@
 import { Response, NextFunction } from "express";
-import { verifyJWT } from "@utils";
+import { decodeJWT } from "@utils";
 import { TokenRequest } from "@types";
 
-export function decodeJWT(
+export function verifyJWT(
   req: TokenRequest,
   res: Response,
   next: NextFunction
 ): void {
   const { token } = req.query;
 
-  const { decodedToken } = verifyJWT(token as string);
+  const { decodedToken } = decodeJWT(token as string);
 
-  if (decodedToken === null) {
-    res.status(401).json({ message: "Invalid token" });
-    return;
-  }
+  if (decodedToken === null) return next(new Error("Invalid token"));
 
   req.decodedToken = decodedToken;
   next();

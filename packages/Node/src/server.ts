@@ -1,4 +1,4 @@
-import express from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
 import { createServer } from "http";
@@ -26,11 +26,21 @@ export async function startServer(): Promise<number> {
   app.use(bodyParser.json());
 
   app.use("/api/account", account);
+  app.use(handleError);
 
   const port = await initializeServer();
 
   return port as number;
 }
+ function handleError(
+  err: Error,
+  _: Request,
+  res: Response,
+  next: NextFunction
+) {
+  res.status(409).json({ message: err.message });
+}
+
 
 export function initializeServer() {
   return new Promise((resolve, reject) => {

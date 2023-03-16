@@ -3,9 +3,8 @@ import { Router } from "express";
 import {
   checkAccountDoublon,
   createUnconfirmedAccountToDatabase,
-  handleAccountCreationError,
   sendConfirmationToken,
-  decodeJWT,
+  verifyJWT,
   confirmAccount,
 } from "@middlewares";
 
@@ -15,10 +14,9 @@ account.post(
   "/create",
   checkAccountDoublon,
   createUnconfirmedAccountToDatabase,
-  sendConfirmationToken,
-  handleAccountCreationError
+  sendConfirmationToken
 );
 
-account.post("/confirm", decodeJWT, confirmAccount);
+account.post("/confirm", verifyJWT, confirmAccount);
 
 export { account };

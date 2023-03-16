@@ -41,12 +41,3 @@ export function sendConfirmationToken(req: Request, res: Response) {
 
   res.status(200).json({ message: "Account created", token });
 }
-
-export function handleAccountCreationError(
-  err: Error,
-  _: Request,
-  res: Response,
-  next: NextFunction
-) {
-  res.status(409).json({ message: err.message });
-}
