@@ -1,6 +1,6 @@
 import { makeMove } from "./makeMove";
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
-import { initializeSocketConnection, io, stopServer } from "@server";
+import { initializeSockets, io, stopServer } from "@server";
 import { mockLobby, mockPlayers, resolveWhenSignalEmitted } from "@utils";
 import { Socket } from "socket.io";
 import { MovePosition, Player } from "@types";
@@ -11,7 +11,7 @@ describe("makeMove", () => {
   const players: Player[] = mockPlayers("Miouss", "Samir");
 
   beforeAll(async () => {
-    sockets = await initializeSocketConnection(sockets, players);
+    sockets = await initializeSockets(sockets, players);
   });
 
   afterAll(async () => {
