@@ -4,8 +4,8 @@ import bodyParser from "body-parser";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import { io as client } from "socket.io-client";
-import { accountCreation, login } from "@controllers";
 import { Player } from "@types";
+import { account } from "@routes";
 
 import * as dotenv from "dotenv";
 dotenv.config();
@@ -24,8 +24,7 @@ export async function startServer(): Promise<number> {
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
 
-  app.post("/api/create-account", accountCreation);
-  app.post("/api/login", login);
+  app.use("/api/account", account);
 
   const port = await new Promise((resolve) => {
     let currentPort = process.env.PORT as unknown as number;
