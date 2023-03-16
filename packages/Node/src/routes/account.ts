@@ -2,21 +2,22 @@ import { Router } from "express";
 
 import {
   checkAccountDoublon,
-  createUnconfirmedAccountToDatabase,
-  sendConfirmationToken,
+  createAccountInDatabase,
+  sendJWT,
   verifyJWT,
   confirmAccount,
+  verifyCredentials,
+  acceptReconnection,
 } from "@middlewares";
 
 const account = Router();
 
-account.post(
-  "/create",
-  checkAccountDoublon,
-  createUnconfirmedAccountToDatabase,
-  sendConfirmationToken
-);
+account.post("/", checkAccountDoublon, createAccountInDatabase, sendJWT);
 
-account.post("/confirm", verifyJWT, confirmAccount);
+account.patch("/", verifyJWT, confirmAccount);
+
+account.post("/login", verifyCredentials, sendJWT);
+
+account.post("/login/refresh", verifyJWT, acceptReconnection);
 
 export { account };

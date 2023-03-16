@@ -12,7 +12,9 @@ export * from "./tests/mock";
 export * from "./lobby/removePlayerFromLobby";
 
 // middlewares
-export * from "./middlewares/account/addAccountToDatabase";
+export * from "./middlewares/account/addAccountInDatabase";
 export * from "./middlewares/account/getAccountFromDatabase";
 export * from "./middlewares/account/getJWT";
 export * from "./middlewares/account/decodeJWT";
+export * from "./middlewares/account/findAccount";
+export * from "./middlewares/account/refreshJWT";

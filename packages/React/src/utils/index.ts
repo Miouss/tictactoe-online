@@ -8,4 +8,4 @@ export * from "./Tictactoe/isGameWin";
 export * from "./Signup/createAccount";
 export * from "./Signup/getCredentials";
 export * from "./Signup/login";
-export * from "./Signup/fetchToDatabase";
+export * from "./Signup/fetchServer";

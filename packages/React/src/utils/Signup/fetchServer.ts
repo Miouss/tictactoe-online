@@ -1,4 +1,4 @@
-export async function fetchToDatabase(url: string, options: RequestInit) {
+export async function fetchServer(url: string, options: RequestInit) {
   const response = await fetch(url, options);
 
   const data = await response.json();

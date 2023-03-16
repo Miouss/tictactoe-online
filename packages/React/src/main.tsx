@@ -6,6 +6,8 @@ import { io } from "socket.io-client";
 
 export const socket = io("http://localhost:3001");
 
-ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
-  <App />
-);
+socket.on("connect", () => {
+  ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+    <App />
+  );
+});

@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction } from "react";
-import { fetchToDatabase, getCredentials } from "../";
+import { fetchServer, getCredentials } from "../";
 
 export async function login(
   event: React.FormEvent<HTMLFormElement>,
@@ -9,6 +9,7 @@ export async function login(
 
   const method = "POST";
   const headers = { "Content-Type": "application/json" };
+  const credentials = "include" as RequestCredentials;
 
   const { username, password } = getCredentials(event);
 
@@ -17,11 +18,11 @@ export async function login(
     password,
   });
 
-  const url = "http://localhost:3001/api/login";
-  const options = { method, headers, body };
+  const url = "http://localhost:3001/api/account/login";
+  const options = { method, headers, body, credentials };
 
   try {
-    const data = await fetchToDatabase(url, options);
+    const data = await fetchServer(url, options);
 
     setPlayerName(username);
   } catch (error: any) {

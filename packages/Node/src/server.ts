@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
 import bodyParser from "body-parser";
+import cookieParser from "cookie-parser";
 import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import { io as client } from "socket.io-client";
@@ -13,17 +14,20 @@ dotenv.config();
 
 const app = express();
 const httpServer = createServer(app);
+const corsOptions = {
+  origin: "http://localhost:5173",
+  credentials: true,
+};
 
 export const io = new Server(httpServer, {
-  cors: {
-    origin: "http://localhost:5173",
-  },
+  cors: corsOptions,
 });
 
 export async function startServer(): Promise<number> {
-  app.use(cors());
+  app.use(cors(corsOptions));
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
+  app.use(cookieParser());
 
   app.use("/api/account", account);
   app.use(handleError);
@@ -32,15 +36,10 @@ export async function startServer(): Promise<number> {
 
   return port as number;
 }
- function handleError(
-  err: Error,
-  _: Request,
-  res: Response,
-  next: NextFunction
-) {
-  res.status(409).json({ message: err.message });
-}
 
+function handleError(err: any, _: Request, res: Response, next: NextFunction) {
+  res.json({ message: err.message });
+}
 
 export function initializeServer() {
   return new Promise((resolve, reject) => {

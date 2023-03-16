@@ -1,21 +1,11 @@
 import jwt from "jsonwebtoken";
 
-interface IVerifyJWT {
-  decodedToken: string | jwt.JwtPayload | null;
-}
+export function decodeJWT(token: string | null, secret: string) {
+  if (token === null) return null;
 
-export function decodeJWT(token: string) {
-  const { JWT_PRIVATE_KEY } = process.env;
-
-  const decodedToken = jwt.verify(
-    token,
-    JWT_PRIVATE_KEY as string,
-    (_, decoded): IVerifyJWT => {
-      return {
-        decodedToken: decoded ?? null,
-      };
-    }
-  ) as unknown as IVerifyJWT;
+  const { decodedToken } = jwt.verify(token, secret, (_, decoded) => ({
+    decodedToken: decoded ?? null,
+  })) as any;
 
   return decodedToken;
 }

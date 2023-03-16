@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Tictactoe, Lobby, Signup } from "./components";
 import { PlayerSign } from "@types";
+import { fetchServer } from "./utils";
 
 export default function App() {
   const [playerName, setPlayerName] = useState("");
@@ -14,6 +15,27 @@ export default function App() {
     flexDirection: "column" as "column",
     gap: "2rem",
   };
+
+  useEffect(() => {
+    const method = "POST";
+    const credentials = "include" as RequestCredentials;
+    const url = "http://localhost:3001/api/account/login/refresh";
+    const options = { method, credentials };
+
+    const test = async () => {
+      try {
+        const data = await fetchServer(url, options);
+        const { username } = data;
+        console.log(data);
+        setPlayerName(username);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+
+    test();
+  }, []);
+
   return (
     <div style={style}>
       {isPlayerConnected ? (

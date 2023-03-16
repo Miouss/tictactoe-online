@@ -1,11 +1,20 @@
 import jwt from "jsonwebtoken";
 
 export function getJWT(username: string) {
-  const { JWT_PRIVATE_KEY } = process.env;
-  console.log(JWT_PRIVATE_KEY);
+  const { ACCESS_JWT_SECRET, REFRESH_JWT_SECRET } = process.env;
 
-  return jwt.sign({ username }, JWT_PRIVATE_KEY as string, {
-    expiresIn: "10m",
+  const token = jwt.sign({ username }, ACCESS_JWT_SECRET as string, {
     algorithm: "HS256",
+    expiresIn: '10m',
   });
+
+  const refreshToken = jwt.sign({ username }, REFRESH_JWT_SECRET as string, {
+    algorithm: "HS256",
+    expiresIn: '1d',
+  });
+
+  return {
+    token,
+    refreshToken,
+  };
 }
