@@ -8,3 +8,4 @@ export * from "./account/sendJWT";
 export * from "./account/confirmAccount";
 export * from "./account/verifyCredentials";
 export * from "./account/acceptReconnection";
+export * from "./account/deleteCookiesTokens";

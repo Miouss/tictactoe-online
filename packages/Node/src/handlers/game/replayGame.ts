@@ -12,8 +12,9 @@ export async function replayGame(socketId: string) {
 
     const players = lobby.players as Player[];
     const opponent = getPlayerNotMatching("id", socketId, players);
+
     io.to(opponent!.id).emit("replayGame");
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    console.error(err);
   }
 }

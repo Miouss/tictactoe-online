@@ -8,6 +8,7 @@ import {
   confirmAccount,
   verifyCredentials,
   acceptReconnection,
+  deleteCookiesTokens,
 } from "@middlewares";
 
 const account = Router();
@@ -19,5 +20,7 @@ account.patch("/", verifyJWT, confirmAccount);
 account.post("/login", verifyCredentials, sendJWT);
 
 account.post("/login/refresh", verifyJWT, acceptReconnection);
+
+account.delete("/login", deleteCookiesTokens);
 
 export { account };

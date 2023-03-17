@@ -24,10 +24,10 @@ describe("leaveLobby", () => {
     const leavingPlayer = players[0];
     const socket = sockets[0];
 
-    mockLobbyfindByIdAndUpdateReturnValue(lobby, leavingPlayer);
+    mockLobbyfindOneAndUpdateReturnValue(lobby, leavingPlayer);
 
     const hasSignalEmitted = await resolveWhenSignalEmitted(
-      () => leaveLobby(leavingPlayer, lobby.id),
+      () => leaveLobby(leavingPlayer),
       socket,
       "playerLeft",
     );
@@ -40,10 +40,10 @@ describe("leaveLobby", () => {
     const leavingPlayer = players[0];
     const socket = sockets[0];
 
-    mockLobbyfindByIdAndUpdateReturnValue(lobby, leavingPlayer);
+    mockLobbyfindOneAndUpdateReturnValue(lobby, leavingPlayer);
 
     const hasSignalEmitted = await resolveWhenSignalEmitted(
-      () => leaveLobby(leavingPlayer, lobby.id),
+      () => leaveLobby(leavingPlayer),
       socket,
       "playerLeft",
     );
@@ -57,10 +57,10 @@ describe("leaveLobby", () => {
 
     const opponentSocket = sockets[1];
 
-    mockLobbyfindByIdAndUpdateReturnValue(lobby, leavingPlayer);
+    mockLobbyfindOneAndUpdateReturnValue(lobby, leavingPlayer);
 
     const hasSignalEmitted = await resolveWhenSignalEmitted(
-      () => leaveLobby(leavingPlayer, lobby.id),
+      () => leaveLobby(leavingPlayer),
       opponentSocket,
       "opponentLeft"
     );
@@ -71,7 +71,7 @@ describe("leaveLobby", () => {
 
 // utils
 
-function mockLobbyfindByIdAndUpdateReturnValue(
+function mockLobbyfindOneAndUpdateReturnValue(
   lobby: any,
   leavingPlayer: Player
 ) {
@@ -80,5 +80,5 @@ function mockLobbyfindByIdAndUpdateReturnValue(
     players: lobby.players.filter((player: Player) => player !== leavingPlayer),
   };
 
-  vi.spyOn(Lobby, "findByIdAndUpdate").mockReturnValue(newLobby);
+  vi.spyOn(Lobby, "findOneAndUpdate").mockReturnValue(newLobby);
 }

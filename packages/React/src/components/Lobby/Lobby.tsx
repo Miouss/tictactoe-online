@@ -1,7 +1,7 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useEffect, useState } from "react";
 import { LobbyFormJoinLobby as FormJoinLobby } from "./LobbyFormJoinLobby";
-import { LobbyActionButtonCreateLobby as ActionButtonCreateLobby } from "./LobbyActionButtonCreateLobby";
-import { LobbyActionButtonLeaveLobby as ActionButtonLeaveLobby } from "./LobbyActionButtonLeaveLobby";
+import { LobbyActionButtonCreateLobby as ButtonCreateLobby } from "./LobbyActionButtonCreateLobby";
+import { LobbyActionButtonLeaveLobby as ButtonLeaveLobby } from "./LobbyActionButtonLeaveLobby";
 import { LobbyPlayersList as PlayersList } from "./LobbyPlayersList";
 import { socket } from "../../main";
 import { useLobbyListeners } from "../../hooks";
@@ -16,27 +16,31 @@ interface Props {
 export function Lobby({ playerName, setPlayerSign }: Props) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [joinedLobbyId, setJoinedLobbyId] = useState("");
+  const [lobbyTriggerAction, setLobbyTriggerAction] = useState<LobbyAction>();
+  const [joiningLobbyId, setJoiningLobbyId] = useState("");
 
   const currentPlayer: Player = {
     name: playerName,
     id: socket.id,
   };
 
-  console.log(currentPlayer);
-
   const hasJoinedLobby = joinedLobbyId !== "";
 
-  const lobbyAction = async (
-    action: LobbyAction,
-    e?: React.FormEvent<HTMLFormElement>
-  ) => {
-    e?.preventDefault();
+  useLobbyListeners(socket, setPlayers, setJoinedLobbyId, setPlayerSign);
 
-    const joiningLobbyId = e?.currentTarget.lobbyId.value;
-    const isJoiningOwnLobby = joiningLobbyId === joinedLobbyId;
+  useEffect(() => {
+    if (!lobbyTriggerAction) return;
 
-    if (hasJoinedLobby && !isJoiningOwnLobby) {
-      await new Promise((res) => {
+    const createLobby = () => {
+      socket.emit("createLobby", currentPlayer);
+    };
+
+    const joinLobby = (joiningLobbyId: string) => {
+      socket.emit("joinLobby", currentPlayer, joiningLobbyId);
+    };
+
+    const leaveLobby = () => {
+      return new Promise((res) => {
         socket.emit("leaveLobby", currentPlayer, joinedLobbyId);
         socket.on("playerLeft", () => {
           setPlayers([]);
@@ -45,19 +49,50 @@ export function Lobby({ playerName, setPlayerSign }: Props) {
           res(true);
         });
       });
-    }
+    };
 
-    switch (action) {
-      case "create":
-        socket.emit("createLobby", currentPlayer);
-        break;
-      case "join":
-        socket.emit("joinLobby", currentPlayer, joiningLobbyId);
-        break;
-    }
-  };
+    const lobbyAction = async (
+      action: LobbyAction,
+      joiningLobbyId?: string
+    ) => {
+      const hasJoinedLobby = joinedLobbyId !== "";
 
-  useLobbyListeners(socket, setPlayers, setJoinedLobbyId, setPlayerSign);
+      if (
+        hasJoinedLobby &&
+        joiningLobbyId !== joinedLobbyId &&
+        action !== "leave"
+      ) {
+        await leaveLobby();
+      }
+
+      switch (action) {
+        case "create":
+          createLobby();
+          break;
+        case "join":
+          joinLobby(joiningLobbyId!);
+          break;
+        case "leave":
+          await leaveLobby();
+          break;
+      }
+    };
+
+    lobbyAction(lobbyTriggerAction, joiningLobbyId);
+
+    return () => {
+      if (joinedLobbyId) {
+        lobbyAction("leave", joiningLobbyId);
+        console.log("joiningLobbyId : ", joiningLobbyId);
+      }
+    };
+  }, [lobbyTriggerAction, joiningLobbyId]);
+
+  useEffect(() => {
+    return () => {
+      socket.emit("leaveLobby", currentPlayer);
+    };
+  }, []);
 
   return (
     <Container>
@@ -66,15 +101,17 @@ export function Lobby({ playerName, setPlayerSign }: Props) {
         players={players}
         currentPlayer={currentPlayer}
       />
-
       <Actions>
         <label>{currentPlayer.name}</label>
         {hasJoinedLobby ? (
-          <ActionButtonLeaveLobby lobbyAction={lobbyAction} />
+          <ButtonLeaveLobby setLobbyTriggerAction={setLobbyTriggerAction} />
         ) : (
-          <ActionButtonCreateLobby lobbyAction={lobbyAction} />
+          <ButtonCreateLobby setLobbyTriggerAction={setLobbyTriggerAction} />
         )}
-        <FormJoinLobby lobbyAction={lobbyAction} />
+        <FormJoinLobby
+          setLobbyTriggerAction={setLobbyTriggerAction}
+          setJoiningLobbyId={setJoiningLobbyId}
+        />
       </Actions>
     </Container>
   );

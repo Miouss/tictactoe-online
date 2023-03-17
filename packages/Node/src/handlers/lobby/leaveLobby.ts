@@ -2,9 +2,9 @@ import { io } from "@server";
 import { Player } from "@types";
 import { removePlayerFromLobby } from "@utils";
 
-export async function leaveLobby(leavingPlayer: Player, lobbyId: string) {
+export async function leaveLobby(leavingPlayer: Player) {
   try {
-    const lobby = await removePlayerFromLobby(leavingPlayer, lobbyId);
+    const lobby = await removePlayerFromLobby(leavingPlayer);
 
     const isLobbyEmpty = lobby.players.length === 0;
 
@@ -17,7 +17,7 @@ export async function leaveLobby(leavingPlayer: Player, lobbyId: string) {
     }
 
     io.to(leavingPlayer.id).emit("playerLeft");
-  } catch (e) {
-    console.error(e);
+  } catch (err) {
+    console.error(err);
   }
 }

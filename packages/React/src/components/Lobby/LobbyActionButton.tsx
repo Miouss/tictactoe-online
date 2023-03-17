@@ -1,14 +1,12 @@
 import { LobbyAction } from "@types";
+import { Dispatch, SetStateAction } from "react";
 
 interface Props {
   action: LobbyAction;
   label: string;
-  lobbyAction: (
-    action: LobbyAction,
-    e?: React.FormEvent<HTMLFormElement>
-  ) => void;
+  setLobbyTriggerAction: Dispatch<SetStateAction<LobbyAction | undefined>>;
 }
 
-export function LobbyActionButton({ action, label, lobbyAction }: Props) {
-  return <button onClick={() => lobbyAction(action)}>{label}</button>;
+export function LobbyActionButton({ action, label, setLobbyTriggerAction }: Props) {
+  return <button onClick={() => setLobbyTriggerAction(action)}>{label}</button>;
 }

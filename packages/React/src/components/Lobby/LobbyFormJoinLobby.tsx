@@ -1,13 +1,24 @@
-import { LobbyActionProps } from "@types";
 import { LobbyFormContents as Contents } from "./LobbyFormContents";
+import { Dispatch, SetStateAction } from "react";
+import { LobbyAction } from "@types";
 
 interface Props {
-  lobbyAction: LobbyActionProps;
+  setLobbyTriggerAction: Dispatch<SetStateAction<LobbyAction | undefined>>;
+  setJoiningLobbyId: Dispatch<SetStateAction<string>>;
 }
 
-export function LobbyFormJoinLobby({ lobbyAction }: Props) {
+export function LobbyFormJoinLobby({
+  setLobbyTriggerAction,
+  setJoiningLobbyId,
+}: Props) {
   return (
-    <form onSubmit={(e) => lobbyAction("join", e)}>
+    <form
+      onSubmit={(e) => {
+        e.preventDefault();
+        setLobbyTriggerAction("join");
+        setJoiningLobbyId(e.currentTarget.lobbyId.value);
+      }}
+    >
       <Contents
         placeholder="Enter Lobby ID"
         name="lobbyId"

@@ -1,16 +1,17 @@
+import { Dispatch, SetStateAction } from "react";
 import { LobbyActionButton as ActionButton } from "./LobbyActionButton";
-import { LobbyActionProps } from "@types";
+import { LobbyAction } from "@types";
 
 interface Props {
-  lobbyAction: LobbyActionProps;
+  setLobbyTriggerAction: Dispatch<SetStateAction<LobbyAction | undefined>>;
 }
 
-export function LobbyActionButtonCreateLobby({ lobbyAction }: Props) {
+export function LobbyActionButtonCreateLobby({ setLobbyTriggerAction }: Props) {
   return (
     <ActionButton
-      lobbyAction={lobbyAction}
       label="Create Lobby"
       action="create"
+      setLobbyTriggerAction={setLobbyTriggerAction}
     />
   );
 }
