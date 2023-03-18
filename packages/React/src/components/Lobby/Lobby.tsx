@@ -11,9 +11,10 @@ import { Player, LobbyAction, PlayerSign } from "@types";
 interface Props {
   playerName: string;
   setPlayerSign: Dispatch<SetStateAction<PlayerSign | undefined>>;
+  setHasGameStarted: Dispatch<SetStateAction<boolean>>;
 }
 
-export function Lobby({ playerName, setPlayerSign }: Props) {
+export function Lobby({ playerName, setPlayerSign, setHasGameStarted }: Props) {
   const [players, setPlayers] = useState<Player[]>([]);
   const [joinedLobbyId, setJoinedLobbyId] = useState("");
   const [lobbyTriggerAction, setLobbyTriggerAction] = useState<LobbyAction>();
@@ -26,7 +27,7 @@ export function Lobby({ playerName, setPlayerSign }: Props) {
 
   const hasJoinedLobby = joinedLobbyId !== "";
 
-  useLobbyListeners(socket, setPlayers, setJoinedLobbyId, setPlayerSign);
+  useLobbyListeners(socket, setPlayers, setJoinedLobbyId, setPlayerSign, setHasGameStarted);
 
   useEffect(() => {
     if (!lobbyTriggerAction) return;
@@ -46,6 +47,7 @@ export function Lobby({ playerName, setPlayerSign }: Props) {
           setPlayers([]);
           setJoinedLobbyId("");
           setPlayerSign(undefined);
+          setHasGameStarted(false);
           res(true);
         });
       });

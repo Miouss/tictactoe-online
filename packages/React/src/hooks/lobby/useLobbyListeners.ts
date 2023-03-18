@@ -6,12 +6,14 @@ export function useLobbyListeners(
   socket: Socket,
   setPlayers: Dispatch<SetStateAction<Player[]>>,
   setJoinedLobbyId: Dispatch<SetStateAction<string>>,
-  setPlayerSign: Dispatch<SetStateAction<"X" | "O" | undefined>>
+  setPlayerSign: Dispatch<SetStateAction<"X" | "O" | undefined>>,
+  setHasGameStarted: Dispatch<SetStateAction<boolean>>
 ) {
   useEffect(() => {
     socket.on("lobbyCreated", (player: Player, lobbyId: string) => {
       setPlayers([player]);
       setJoinedLobbyId(lobbyId);
+      setPlayerSign("X");
     });
 
     socket.on("lobbyFull", () => {
@@ -36,18 +38,17 @@ export function useLobbyListeners(
 
     socket.on("opponentLeft", (remainingPlayer: Player) => {
       setPlayers([remainingPlayer]);
-      setPlayerSign(undefined);
+      setPlayerSign("X");
+      setHasGameStarted(false);
       alert("The opponent left the lobby");
     });
 
-    socket.on(
-      "playerJoined",
-      (playersInLobby: Player[], lobbyId: string, position: 0 | 1) => {
-        const sign = position ? "O" : "X";
-        setPlayers(playersInLobby);
-        setJoinedLobbyId(lobbyId);
-        setPlayerSign(sign);
-      }
-    );
+    socket.on("playerJoined", (playersInLobby: Player[], lobbyId: string) => {
+      console.log(`socket id : ${socket.id}`)
+      setPlayers(playersInLobby);
+      setJoinedLobbyId(lobbyId);
+      setPlayerSign((sign) => (sign === "X" ? sign : "O"));
+      setHasGameStarted(true);
+    });
   }, []);
 }

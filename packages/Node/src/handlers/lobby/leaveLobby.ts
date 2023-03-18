@@ -4,16 +4,16 @@ import { removePlayerFromLobby } from "@utils";
 
 export async function leaveLobby(leavingPlayer: Player) {
   try {
-    const lobby = await removePlayerFromLobby(leavingPlayer);
+    const { lobby, lobbyId } = await removePlayerFromLobby(leavingPlayer);
 
     const isLobbyEmpty = lobby.players.length === 0;
 
     if (isLobbyEmpty) {
       await lobby.delete();
-      console.log("Lobby deleted");
+      console.log(`Lobby deleted with last player: ${leavingPlayer.name}`);
     } else {
-      const opponent = lobby.players[0] as Player;
-      io.to(opponent.id).emit("opponentLeft", opponent);
+      const opponent = lobby.players[0];
+      io.in(lobbyId).emit("opponentLeft", opponent);
     }
 
     io.to(leavingPlayer.id).emit("playerLeft");

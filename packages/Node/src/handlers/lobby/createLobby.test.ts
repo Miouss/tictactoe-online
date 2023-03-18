@@ -19,7 +19,7 @@ describe("createLobby", () => {
   });
 
   it("should emit 'lobbyCreated' to the player after the lobby was created", async () => {
-    vi.spyOn(Lobby, "create").mockResolvedValue({ id: "123" } as any);
+    vi.spyOn(Lobby, "create").mockResolvedValue({ _id: "123" } as any);
 
     const hasSignalEmitted = await resolveWhenSignalEmitted(
       () => createLobby(players[0]),

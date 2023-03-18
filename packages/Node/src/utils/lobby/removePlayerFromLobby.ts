@@ -1,4 +1,5 @@
 import { Lobby } from "@database";
+import { io } from "@server";
 import { Player } from "@types";
 
 export async function removePlayerFromLobby(currentPlayer: Player) {
@@ -9,9 +10,12 @@ export async function removePlayerFromLobby(currentPlayer: Player) {
   const options = { new: true };
 
   const lobby = await Lobby.findOneAndUpdate(filter, update, options);
-  if (!lobby) throw "Lobby not found";
+  if (!lobby) throw `${currentPlayer.name} is not in a lobby`;
 
-  console.log(`${currentPlayer.name} removed from lobby`);
+  const lobbyId = lobby._id.toString();
 
-  return lobby;
+  io.in(currentPlayer.id).socketsLeave(lobbyId);
+  console.log(`${currentPlayer.name} left the lobby`);
+
+  return { lobby, lobbyId };
 }

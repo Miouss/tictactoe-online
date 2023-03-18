@@ -7,7 +7,7 @@ export function mockPlayers(...names: string[]): Player[] {
 
 export function mockLobby(...players: Player[]) {
   return {
-    id: "123",
+    _id: "123",
     players,
     save() {
       return Promise.resolve;

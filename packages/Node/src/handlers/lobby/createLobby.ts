@@ -5,9 +5,12 @@ import { Player } from "@types";
 export async function createLobby(player: Player) {
   try {
     const { _id } = await Lobby.create({ players: player });
-    console.log("Lobby created");
+    console.log(`${player.name} created a lobby`);
 
-    io.to(player.id).emit("lobbyCreated", player, _id);
+    const lobbyId = _id.toString();
+
+    io.to(player.id).socketsJoin(lobbyId);
+    io.in(lobbyId).emit("lobbyCreated", player, lobbyId);
   } catch (e) {
     console.error(e);
   }

@@ -2,7 +2,7 @@ import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import { Socket } from "socket.io";
 import { Player } from "@types";
 import { mockLobby, mockPlayers, resolveWhenSignalEmitted } from "@utils";
-import { initializeSockets, stopServer } from "@server";
+import { initializeSockets, io, stopServer } from "@server";
 import { Lobby } from "@database";
 import { leaveLobby } from "@handlers";
 
@@ -24,6 +24,8 @@ describe("leaveLobby", () => {
     const leavingPlayer = players[0];
     const socket = sockets[0];
 
+    io.to(leavingPlayer.id).socketsJoin(lobby._id);
+
     mockLobbyfindOneAndUpdateReturnValue(lobby, leavingPlayer);
 
     const hasSignalEmitted = await resolveWhenSignalEmitted(
@@ -41,6 +43,8 @@ describe("leaveLobby", () => {
     const socket = sockets[0];
 
     mockLobbyfindOneAndUpdateReturnValue(lobby, leavingPlayer);
+    
+    io.to(leavingPlayer.id).socketsJoin(lobby._id);
 
     const hasSignalEmitted = await resolveWhenSignalEmitted(
       () => leaveLobby(leavingPlayer),
@@ -55,7 +59,11 @@ describe("leaveLobby", () => {
     const lobby = mockLobby(players[0], players[1]);
     const leavingPlayer = players[0];
 
+    const leavingPlayerSocket = sockets[0];
     const opponentSocket = sockets[1];
+
+    io.to(leavingPlayerSocket.id).socketsJoin(lobby._id);
+    io.to(opponentSocket.id).socketsJoin(lobby._id);
 
     mockLobbyfindOneAndUpdateReturnValue(lobby, leavingPlayer);
 
@@ -79,6 +87,8 @@ function mockLobbyfindOneAndUpdateReturnValue(
     ...lobby,
     players: lobby.players.filter((player: Player) => player !== leavingPlayer),
   };
+
+  console.log(newLobby);
 
   vi.spyOn(Lobby, "findOneAndUpdate").mockReturnValue(newLobby);
 }

@@ -1,6 +1,6 @@
 import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
 import { Socket } from "socket.io";
-import { initializeSockets, stopServer } from "@server";
+import { initializeSockets, io, stopServer } from "@server";
 import { Lobby } from "@database";
 import { mockLobby, mockPlayers, resolveWhenSignalEmitted } from "@utils";
 import { joinLobby } from "@handlers";
@@ -72,7 +72,9 @@ describe("joinLobby", () => {
     const lobby = mockLobby(players[0]);
 
     mockLobbyFindByIdReturnValue(lobby);
-
+    
+    io.to(sockets[0].id).socketsJoin(lobby.id);
+    
     const hasSignalEmittedToAllPlayers = await resolveWhenSignalEmitted(
       () => joinLobby(joiningPlayer, lobby.id),
       [socket, sockets[0]],

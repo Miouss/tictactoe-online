@@ -22,13 +22,10 @@ export async function joinLobby(joiningPlayer: Player, lobbyId: string) {
       return io.to(joiningPlayer.id).emit("playerNameTaken");
 
     lobby.players.push(joiningPlayer);
-
     await lobby.save();
-    console.log("Player added to lobby");
-
-    players.forEach((player: Player, index) => {
-      io.to(player.id).emit("playerJoined", players, lobbyId, index as 0 | 1);
-    });
+  
+    io.to(joiningPlayer.id).socketsJoin(lobbyId);
+    io.in(lobbyId).emit("playerJoined", players, lobbyId);
   } catch (e) {
     io.to(joiningPlayer.id).emit("LobbyNotFound");
   }

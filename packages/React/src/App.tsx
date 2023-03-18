@@ -1,16 +1,14 @@
 import { useEffect, useState } from "react";
 import { Tictactoe, Lobby, Signup } from "./components";
-import { LobbyAction, PlayerSign } from "@types";
+import { PlayerSign } from "@types";
 import { fetchServer } from "./utils";
 
 export default function App() {
   const [playerName, setPlayerName] = useState("");
   const [playerSign, setPlayerSign] = useState<PlayerSign>();
-  const [lobbyTriggerAction, setLobbyTriggerAction] = useState<LobbyAction>();
-
+  const [hasGameStarted, setHasGameStarted] = useState(false);
 
   const isPlayerConnected = playerName !== "";
-  const isGameStarted = playerSign !== undefined;
 
   const style = {
     display: "flex",
@@ -57,8 +55,8 @@ export default function App() {
     <div style={style}>
       {isPlayerConnected ? (
         <>
-          {isGameStarted && <Tictactoe playerSign={playerSign} />}
-          <Lobby playerName={playerName} setPlayerSign={setPlayerSign} />
+          {hasGameStarted && <Tictactoe playerSign={playerSign} />}
+          <Lobby playerName={playerName} setPlayerSign={setPlayerSign} setHasGameStarted={setHasGameStarted}/>
           <button onClick={logout}>Disconnect</button>
         </>
       ) : (
