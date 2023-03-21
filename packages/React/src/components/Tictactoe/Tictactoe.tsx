@@ -1,22 +1,25 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { TicTacToe, Board, GameStatus } from "../../styles";
 import { TictactoeBoardSquare as Square } from "./TictactoeBoardSquare";
-import { PlayerSign, squareId } from "@types";
+import { GameIssue, ResetBoard, SideSign, SquareId } from "@types";
 import { socket } from "../../main";
-import { isGameWin } from "../../utils";
-
-type GameIssue = "running" | "win" | "lose";
-type ResetSquares = boolean | "pending";
+import { createBoard, replayGame } from "../../utils";
+import {
+  useGameListeners,
+  useGameEmitters,
+  useResetSquares,
+} from "../../hooks";
 
 interface Props {
-  playerSign: PlayerSign | undefined;
+  playerSign: SideSign | undefined;
 }
+
 export function Tictactoe({ playerSign }: Props) {
   const isGameOwner = playerSign === "X";
   const [canPlay, setCanPlay] = useState(isGameOwner);
   const [gameIssue, setGameIssue] = useState<GameIssue>("running");
   const [squaresStates, setSquaresStates] = useState(Array(9).fill(null));
-  const [resetSquares, setResetSquares] = useState<ResetSquares>("pending");
+  const [resetBoard, setResetBoard] = useState<ResetBoard>("pending");
 
   const opponentSign = playerSign === "X" ? "O" : "X";
   const isGameRunning = gameIssue === "running";
@@ -30,70 +33,51 @@ export function Tictactoe({ playerSign }: Props) {
           <Square
             key={`square${i}`}
             playerSign={playerSign}
-            squareId={i as squareId}
+            squareId={i as SquareId}
           />
         );
       });
 
-  socket.on("moveMade", (socketId: string, squareId: squareId) => {
-    const isMoveMadeByOpponent = socket.id !== socketId;
-    if (isMoveMadeByOpponent) {
-      setCanPlay(true);
-      setSquaresStates((prev) => {
-        const newSquaresStates = prev;
-        newSquaresStates[squareId] = opponentSign;
-        return newSquaresStates;
-      });
-    } else {
-      setCanPlay(false);
-      setSquaresStates((prev: any[]) => {
-        const newSquaresStates = prev;
-        newSquaresStates[squareId] = playerSign;
-        return newSquaresStates;
-      });
-    }
-  });
-
-  socket.on("gameEnded", (gameIssue: GameIssue) => {
-    setGameIssue(gameIssue);
-  });
-
-  useEffect(() => {
-    if (isGameWin(squaresStates, playerSign)) {
-      socket.emit("gameWin", socket.id);
-    }
-  }, [canPlay]);
-
-  const resetFields = () => {
-    setSquaresStates(Array(9).fill(null));
-    setGameIssue("running");
-    setResetSquares(true);
+  const handleReplayButtonClick = () => {
+    replayGame(socket, setSquaresStates, setGameIssue, setResetBoard);
   };
 
-  const replayGame = () => {
-    resetFields();
-    socket.emit("replayGame", socket.id);
+  const handleBoardCreation = () => {
+    if (resetBoard === "pending"){
+      return createBoard(
+        playerSign,
+        Square,
+      )
+    };
   };
 
-  socket.on("replayGame", resetFields);
 
-  useEffect(() => {
-    if (resetSquares === "pending") return;
-    setResetSquares("pending");
-  }, [resetSquares]);
+  useResetSquares(resetBoard, setResetBoard);
 
-  socket.on("replayGame", resetFields);
+  useGameListeners(
+    socket,
+    playerSign,
+    opponentSign,
+    setCanPlay,
+    setSquaresStates,
+    setGameIssue,
+    setResetBoard
+  );
+
+  useGameEmitters(socket, squaresStates, playerSign, canPlay);
 
   return (
     <>
       <GameStatus hidden={isGameRunning}>
         <h3>{`You ${gameIssue} the game!`}</h3>
-        {isGameOwner && <button onClick={replayGame}>Replay ?</button>}
+        {isGameOwner && (
+          <button onClick={handleReplayButtonClick}>Replay ?</button>
+        )}
       </GameStatus>
 
       <TicTacToe>
         <Board playing={isGameRunningAndCanPlay}>
-          {resetSquares === "pending" && squares()}
+          {handleBoardCreation()}
         </Board>
       </TicTacToe>
     </>

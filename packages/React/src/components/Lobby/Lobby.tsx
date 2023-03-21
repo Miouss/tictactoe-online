@@ -6,11 +6,11 @@ import { LobbyPlayersList as PlayersList } from "./LobbyPlayersList";
 import { socket } from "../../main";
 import { useLobbyListeners } from "../../hooks";
 import { Container, Actions } from "../../styles";
-import { Player, LobbyAction, PlayerSign } from "@types";
+import { Player, LobbyAction, SideSign } from "@types";
 
 interface Props {
   playerName: string;
-  setPlayerSign: Dispatch<SetStateAction<PlayerSign | undefined>>;
+  setPlayerSign: Dispatch<SetStateAction<SideSign | undefined>>;
   setHasGameStarted: Dispatch<SetStateAction<boolean>>;
 }
 
@@ -27,7 +27,13 @@ export function Lobby({ playerName, setPlayerSign, setHasGameStarted }: Props) {
 
   const hasJoinedLobby = joinedLobbyId !== "";
 
-  useLobbyListeners(socket, setPlayers, setJoinedLobbyId, setPlayerSign, setHasGameStarted);
+  useLobbyListeners(
+    socket,
+    setPlayers,
+    setJoinedLobbyId,
+    setPlayerSign,
+    setHasGameStarted
+  );
 
   useEffect(() => {
     if (!lobbyTriggerAction) return;

@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { CrossIcon, CircleIcon } from "../../assets";
 import { Square, fullSize } from "../../styles";
-import { PlayerSign, squareId } from "@types";
+import { SideSign, SquareId } from "@types";
 
 import { socket } from "../../main";
 
 interface Props {
-  playerSign: PlayerSign | undefined;
-  squareId: squareId;
+  playerSign: SideSign | undefined;
+  squareId: SquareId;
 }
 
 export function TictactoeBoardSquare({ playerSign, squareId }: Props) {
@@ -27,7 +27,7 @@ export function TictactoeBoardSquare({ playerSign, squareId }: Props) {
     socket.emit("makeMove", squareId, socket.id);
   };
 
-  socket.on("moveMade", (socketId: string, squareIdPlayed: squareId) => {
+  socket.on("moveMade", (socketId: string, squareIdPlayed: SquareId) => {
     if (squareIdPlayed !== squareId) return;
     if (socket.id === socketId) setIsPlayedByPlayer(true);
     else setIsPlayedByOpponent(true);
