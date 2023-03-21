@@ -26,7 +26,7 @@ describe("joinLobby", () => {
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmitted = await resolveWhenSignalEmitted(
-      () => joinLobby(joiningPlayer, lobby.id),
+      () => joinLobby(joiningPlayer, lobby._id),
       socket,
       "lobbyFull"
     );
@@ -42,7 +42,7 @@ describe("joinLobby", () => {
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmitted = await resolveWhenSignalEmitted(
-      () => joinLobby(joiningPlayer, lobby.id),
+      () => joinLobby(joiningPlayer, lobby._id),
       socket,
       "playerAlreadyJoined"
     );
@@ -58,7 +58,7 @@ describe("joinLobby", () => {
     mockLobbyFindByIdReturnValue(lobby);
 
     const signalEmitted = await resolveWhenSignalEmitted(
-      () => joinLobby(joiningPlayer, lobby.id),
+      () => joinLobby(joiningPlayer, lobby._id),
       socket,
       "playerNameTaken"
     );
@@ -73,10 +73,10 @@ describe("joinLobby", () => {
 
     mockLobbyFindByIdReturnValue(lobby);
     
-    io.to(sockets[0].id).socketsJoin(lobby.id);
+    io.to(sockets[0].id).socketsJoin(lobby._id);
     
     const hasSignalEmittedToAllPlayers = await resolveWhenSignalEmitted(
-      () => joinLobby(joiningPlayer, lobby.id),
+      () => joinLobby(joiningPlayer, lobby._id),
       [socket, sockets[0]],
       "playerJoined"
     );
