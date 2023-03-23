@@ -1,4 +1,4 @@
-import { LobbyAction } from "@types";
+import { LobbyAction } from "./types";
 import { Dispatch, SetStateAction } from "react";
 
 interface Props {

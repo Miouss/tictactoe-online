@@ -1,7 +1,8 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { SideSign, GameIssue, SquareId, SquareState, ResetBoard } from "@types";
 import { Socket } from "socket.io-client";
-import { resetFields } from "../../utils";
+import { resetFields } from "../utils";
+import { GameIssue, ResetBoard, SquareId, SquareState } from "../types";
+import { SideSign } from "@types";
 
 export function useGameListeners(
   socket: Socket,

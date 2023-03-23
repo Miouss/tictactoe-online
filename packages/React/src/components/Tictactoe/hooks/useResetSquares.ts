@@ -1,5 +1,5 @@
 import { Dispatch, SetStateAction, useEffect } from "react";
-import { ResetBoard } from "@types";
+import { ResetBoard } from "../types";
 
 export function useResetSquares(
   resetBoard: ResetBoard,

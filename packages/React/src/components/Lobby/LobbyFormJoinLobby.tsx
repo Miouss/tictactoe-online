@@ -1,6 +1,6 @@
 import { LobbyFormContents as Contents } from "./LobbyFormContents";
 import { Dispatch, SetStateAction } from "react";
-import { LobbyAction } from "@types";
+import { LobbyAction } from "./types";
 
 interface Props {
   setLobbyTriggerAction: Dispatch<SetStateAction<LobbyAction | undefined>>;

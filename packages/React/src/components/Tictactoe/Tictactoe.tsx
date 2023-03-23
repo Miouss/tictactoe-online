@@ -1,14 +1,11 @@
 import { useState } from "react";
-import { TicTacToe, Board, GameStatus } from "../../styles";
-import { TictactoeBoardSquare as Square } from "./TictactoeBoardSquare";
-import { GameIssue, ResetBoard, SideSign, SquareId } from "@types";
 import { socket } from "../../main";
-import { createBoard, replayGame } from "../../utils";
-import {
-  useGameListeners,
-  useGameEmitters,
-  useResetSquares,
-} from "../../hooks";
+import { TictactoeBoardSquare as Square } from "./TictactoeBoardSquare";
+import { createBoard, replayGame } from "./utils";
+import { useGameListeners, useGameEmitters, useResetSquares } from "./hooks";
+import { TicTacToe, Board, GameStatus } from "./styles";
+import { GameIssue, ResetBoard } from "./types";
+import { SideSign } from "@types";
 
 interface Props {
   playerSign: SideSign | undefined;
@@ -25,32 +22,15 @@ export function Tictactoe({ playerSign }: Props) {
   const isGameRunning = gameIssue === "running";
   const isGameRunningAndCanPlay = canPlay && isGameRunning;
 
-  const squares = () =>
-    Array(9)
-      .fill(null)
-      .map((_, i) => {
-        return (
-          <Square
-            key={`square${i}`}
-            playerSign={playerSign}
-            squareId={i as SquareId}
-          />
-        );
-      });
-
   const handleReplayButtonClick = () => {
     replayGame(socket, setSquaresStates, setGameIssue, setResetBoard);
   };
 
   const handleBoardCreation = () => {
-    if (resetBoard === "pending"){
-      return createBoard(
-        playerSign,
-        Square,
-      )
-    };
+    if (resetBoard === "pending") {
+      return createBoard(playerSign, Square);
+    }
   };
-
 
   useResetSquares(resetBoard, setResetBoard);
 
@@ -76,9 +56,7 @@ export function Tictactoe({ playerSign }: Props) {
       </GameStatus>
 
       <TicTacToe>
-        <Board playing={isGameRunningAndCanPlay}>
-          {handleBoardCreation()}
-        </Board>
+        <Board playing={isGameRunningAndCanPlay}>{handleBoardCreation()}</Board>
       </TicTacToe>
     </>
   );

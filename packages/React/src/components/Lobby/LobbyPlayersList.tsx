@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { copyLobbyId } from "../../utils";
-import { useSwitchCopyLobbyIdIcon } from "../../hooks";
+import { copyLobbyId } from "./utils";
+import { useSwitchCopyLobbyIdIcon } from "./hooks";
 import { CopyIcon, CopyDoneIcon, OwnerIcon } from "../../assets";
 import { Player } from "@types";
 

@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { CrossIcon, CircleIcon } from "../../assets";
-import { Square, fullSize } from "../../styles";
-import { SideSign, SquareId } from "@types";
-
 import { socket } from "../../main";
+import { CrossIcon, CircleIcon } from "../../assets";
+import { Square } from "./styles";
+import { fullSize } from "../../styles";
+import { SquareId } from "./types";
+import { SideSign } from "../../types";
 
 interface Props {
   playerSign: SideSign | undefined;

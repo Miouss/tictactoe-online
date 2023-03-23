@@ -1,14 +1,9 @@
 import { Dispatch, SetStateAction, useState } from "react";
-import { SignupLogin as LoginForm } from "./SignupLogin";
-import { SignupCreateAccount as CreateAccountForm } from "./SignupCreateAccount";
-import {
-  SignupContainer as Container,
-  SignupActions as Actions,
-  Button,
-  ConditionnalSubMenu,
-} from "../../styles";
-
-type SubMenu = "createAccount" | "login";
+import { SignupActionButton as Button } from "./SignupActionButton";
+import { SignupLogin as FormLogin } from "./SignupLogin";
+import { SignupCreateAccount as FormCreateAccount } from "./SignupCreateAccount";
+import { Container, Actions, ConditionnalSubMenu } from "./styles";
+import { SubMenu } from "./types";
 
 export function Signup({
   setPlayerName,
@@ -20,21 +15,39 @@ export function Signup({
   const isSubMenuOpen = openSubmenu !== undefined;
   const isCreatingAccount = openSubmenu === "createAccount";
 
+  const createActionButton = (label: string, submenuName: SubMenu) => ({
+    label,
+    submenuName,
+  });
+
+  const actionsButtonsList = [
+    createActionButton("Create New Account", "createAccount"),
+    createActionButton("Connect with account", "login"),
+  ];
+
+  const ActionsButtons = () => (
+    <>
+      {actionsButtonsList.map((button, i) => (
+        <Button
+          key={i}
+          label={button.label}
+          submenuName={button.submenuName}
+          setOpenSubmenu={setOpenSubmenu}
+        />
+      ))}
+    </>
+  );
+
   return (
     <Container>
       <Actions>
-        <Button onClick={() => setOpenSubmenu("createAccount")}>
-          Create New Account
-        </Button>
-        <Button onClick={() => setOpenSubmenu("login")}>
-          Connect with account
-        </Button>
+        <ActionsButtons />
       </Actions>
       <ConditionnalSubMenu displayed={isSubMenuOpen}>
         {isCreatingAccount ? (
-          <CreateAccountForm />
+          <FormCreateAccount />
         ) : (
-          <LoginForm setPlayerName={setPlayerName} />
+          <FormLogin setPlayerName={setPlayerName} />
         )}
       </ConditionnalSubMenu>
     </Container>

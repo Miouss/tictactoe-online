@@ -1,5 +1,6 @@
 import { Dispatch, SetStateAction } from "react";
-import { fetchServer, getCredentials } from "../";
+import { getCredentials } from "./";
+import { fetchServer } from "../../../utils";
 
 export async function login(
   event: React.FormEvent<HTMLFormElement>,

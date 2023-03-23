@@ -4,9 +4,10 @@ import { LobbyActionButtonCreateLobby as ButtonCreateLobby } from "./LobbyAction
 import { LobbyActionButtonLeaveLobby as ButtonLeaveLobby } from "./LobbyActionButtonLeaveLobby";
 import { LobbyPlayersList as PlayersList } from "./LobbyPlayersList";
 import { socket } from "../../main";
-import { useLobbyListeners } from "../../hooks";
-import { Container, Actions } from "../../styles";
-import { Player, LobbyAction, SideSign } from "@types";
+import { useLobbyListeners } from "./hooks";
+import { Container, Actions } from "./styles";
+import { LobbyAction } from "./types";
+import { Player, SideSign } from "@types";
 
 interface Props {
   playerName: string;

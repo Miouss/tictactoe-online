@@ -1,11 +1,11 @@
 import { Dispatch, SetStateAction } from "react";
-import { login } from "../../utils";
+import { login } from "./utils";
 import {
-  FormAccount as Form,
-  InputUsername as Username,
-  InputPassword as Password,
-  ButtonSubmit as Submit,
-} from "../../styles";
+  Form,
+  Username,
+  Password,
+  Submit,
+} from "./styles";
 
 interface Props {
   setPlayerName: Dispatch<SetStateAction<string>>;

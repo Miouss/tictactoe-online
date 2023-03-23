@@ -1,3 +1,6 @@
-export * from "./Player";
-export * from "./Lobby";
-export * from "./Tictactoe";
+export type SideSign = "X" | "O" | undefined;
+
+export interface Player {
+  name: string;
+  id: string;
+}

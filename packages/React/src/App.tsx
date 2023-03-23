@@ -1,11 +1,11 @@
 import { useEffect, useState } from "react";
 import { Tictactoe, Lobby, Signup } from "./components";
-import { PlayerSign } from "@types";
+import { SideSign } from "@types";
 import { fetchServer } from "./utils";
 
 export default function App() {
   const [playerName, setPlayerName] = useState("");
-  const [playerSign, setPlayerSign] = useState<PlayerSign>();
+  const [playerSign, setPlayerSign] = useState<SideSign>();
   const [hasGameStarted, setHasGameStarted] = useState(false);
 
   const isPlayerConnected = playerName !== "";
@@ -56,7 +56,11 @@ export default function App() {
       {isPlayerConnected ? (
         <>
           {hasGameStarted && <Tictactoe playerSign={playerSign} />}
-          <Lobby playerName={playerName} setPlayerSign={setPlayerSign} setHasGameStarted={setHasGameStarted}/>
+          <Lobby
+            playerName={playerName}
+            setPlayerSign={setPlayerSign}
+            setHasGameStarted={setHasGameStarted}
+          />
           <button onClick={logout}>Disconnect</button>
         </>
       ) : (

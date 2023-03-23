@@ -1,23 +1,26 @@
 import { useRef } from "react";
-import { createAccount } from "../../utils";
+import { createAccount } from "./utils";
 import {
-  FormAccount as Form,
-  InputUsername as Username,
-  InputPassword as Password,
-  InputPasswordConfirm as PasswordConfirm,
-  InputEmail as Email,
-  ButtonSubmit as Submit,
-} from "../../styles";
+  Form,
+  Username,
+  Password,
+  PasswordConfirm,
+  Email,
+  Submit,
+} from "./styles";
 
 export function SignupCreateAccount() {
   const passwordRef = useRef<HTMLInputElement>(null);
   const passwordConfirmRef = useRef<HTMLInputElement>(null);
 
   const validatePassword = () => {
-    if (passwordRef.current?.value !== passwordConfirmRef.current?.value) {
-      passwordConfirmRef.current?.setCustomValidity("Passwords do not match");
-    } else {
+    const hasSamePasswords =
+      passwordRef.current?.value === passwordConfirmRef.current?.value;
+
+    if (hasSamePasswords) {
       passwordConfirmRef.current?.setCustomValidity("");
+    } else {
+      passwordConfirmRef.current?.setCustomValidity("Passwords do not match");
     }
   };
 

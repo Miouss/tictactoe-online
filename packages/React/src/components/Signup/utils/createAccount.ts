@@ -1,4 +1,5 @@
-import { getCredentials, fetchServer } from "../";
+import { getCredentials } from "./";
+import { fetchServer } from "../../../utils";
 
 export async function createAccount(event: React.FormEvent<HTMLFormElement>) {
   event.preventDefault();

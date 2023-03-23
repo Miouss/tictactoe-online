@@ -1,7 +1,8 @@
 import { useEffect } from "react";
-import { isGameWin } from "../../utils";
-import { SquareState, SideSign } from "@types";
 import { Socket } from "socket.io-client";
+import { isGameWin } from "../utils";
+import { SquareState } from "../types";
+import { SideSign } from "@types";
 
 export function useGameEmitters(
   socket: Socket,
