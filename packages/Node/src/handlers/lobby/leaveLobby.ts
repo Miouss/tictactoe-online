@@ -1,6 +1,6 @@
 import { io } from "@server";
 import { Player } from "@types";
-import { removePlayerFromLobby } from "@utils";
+import { removePlayerFromLobby } from "./utils";
 
 export async function leaveLobby(leavingPlayer: Player) {
   try {

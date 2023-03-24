@@ -1,7 +1,7 @@
 import { Lobby } from "@database";
 import { io } from "@server";
 import { Player } from "@types";
-import { getPlayerBy } from "@utils";
+import { getPlayerBy } from "./utils";
 
 export async function joinLobby(joiningPlayer: Player, lobbyId: string) {
   try {

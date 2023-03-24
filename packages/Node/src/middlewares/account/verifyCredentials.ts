@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { findAccountByCredentials } from "@utils";
-import { AccountBody } from "@types";
+import { findAccountByCredentials } from "./utils";
+import { AccountBody } from "./types";
 
 export async function verifyCredentials(
   req: Request,

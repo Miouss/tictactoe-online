@@ -1,7 +1,7 @@
 import { Lobby } from "@database";
 import { io } from "@server";
 import { Player } from "@types";
-import { getPlayerNotMatching } from "@utils";
+import { getPlayerNotMatching } from "./utils";
 
 export async function declareWinner(socketId: string) {
   try {

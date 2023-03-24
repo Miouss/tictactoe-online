@@ -1,6 +1,6 @@
 import { Request, Response } from "express";
 import { getJWT } from "@utils";
-import { AccountBody } from "@types";
+import { AccountBody } from "./types";
 
 export function sendJWT(req: Request, res: Response) {
   const { username } = req.body as AccountBody;
@@ -8,7 +8,7 @@ export function sendJWT(req: Request, res: Response) {
   const { token, refreshToken } = getJWT(username);
 
   const isProductionEnv = process.env.NODE_ENV === "production";
-  
+
   res.cookie("refreshToken", refreshToken, {
     httpOnly: true,
     secure: isProductionEnv,

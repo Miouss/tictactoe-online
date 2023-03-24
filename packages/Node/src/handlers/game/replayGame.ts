@@ -1,5 +1,5 @@
 import { Lobby } from "@database";
-import { getPlayerNotMatching } from "@utils";
+import { getPlayerNotMatching } from "./utils";
 import { io } from "@server";
 import { Player } from "@types";
 

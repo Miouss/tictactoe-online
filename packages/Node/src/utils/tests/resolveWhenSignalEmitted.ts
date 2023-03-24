@@ -24,7 +24,7 @@ export function resolveWhenSignalEmitted(
   });
 }
 
-export function listenToSignal(
+function listenToSignal(
   signal: string,
   socket: Socket,
   expectedArg?: any

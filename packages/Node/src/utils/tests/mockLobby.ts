@@ -1,9 +1,4 @@
 import { Player } from "@types";
-import { createPlayer } from "@utils";
-
-export function mockPlayers(...names: string[]): Player[] {
-  return names.map((name, index) => createPlayer(name, `${index}`));
-}
 
 export function mockLobby(...players: Player[]) {
   return {

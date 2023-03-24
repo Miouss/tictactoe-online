@@ -1,14 +1,13 @@
-import { declareWinner } from "./declareWinner";
-import { describe, it, expect, beforeAll, afterAll, vi } from "vitest";
-import { initializeSockets, io, stopServer } from "@server";
-import { Player } from "@types";
-import { mockPlayers, mockLobby, resolveWhenSignalEmitted } from "@utils";
+import { makeMove } from "../makeMove";
+import { describe, it, expect, vi, beforeAll, afterAll } from "vitest";
+import { initializeSockets, stopServer } from "@server";
+import { mockLobby, mockPlayers, resolveWhenSignalEmitted } from "@utils";
 import { Socket } from "socket.io";
+import { MovePosition, Player } from "@types";
 import { Lobby } from "@database";
 
-describe("declareWinner", () => {
+describe("makeMove", () => {
   let sockets: Socket[] = [];
-
   const players: Player[] = mockPlayers("Miouss", "Samir");
 
   beforeAll(async () => {
@@ -19,9 +18,7 @@ describe("declareWinner", () => {
     await stopServer();
   });
 
-  let action, signal, expectedArgs;
-
-  it("should emit 'gameEnded' event with 'win' arg to the winner and 'lose' arg to the loser", async () => {
+  it("should emit 'moveMade' event to the player and opponent", async () => {
     const lobby = mockLobby(players[0], players[1]);
 
     vi.spyOn(Lobby, "findOne").mockReturnValue({
@@ -30,14 +27,17 @@ describe("declareWinner", () => {
       }),
     } as any);
 
-    action = () => declareWinner(players[0].id);
-    signal = "gameEnded";
-    expectedArgs = ["win", "lose"];
+    const movePosition: MovePosition = 3;
+    const currentPlayerId = players[0].id;
+    const action = () => makeMove(movePosition, currentPlayerId);
+
+    const expectedArgs = Array(2).fill([players[0].id, 3]);
+    console.log(expectedArgs);
 
     const hasSignalEmitted = await resolveWhenSignalEmitted(
       action,
       sockets,
-      signal,
+      "moveMade",
       ...expectedArgs
     );
 

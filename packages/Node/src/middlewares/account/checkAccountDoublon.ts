@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { findAccountByUsername } from "@utils";
-import { AccountBody } from "@types";
+import { findAccountByUsername } from "./utils";
+import { AccountBody } from "./types";
 
 export async function checkAccountDoublon(
   req: Request,

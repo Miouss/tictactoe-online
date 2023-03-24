@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from "express";
-import { addAccountInDatabase } from "@utils";
-import { AccountBody } from "@types";
+import { addAccountInDatabase } from "./utils";
+import { AccountBody } from "./types";
 
 export async function createAccountInDatabase(
   req: Request,
