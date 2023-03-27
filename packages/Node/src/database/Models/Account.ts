@@ -13,6 +13,10 @@ const account = new mongoose.Schema({
     type: String,
     required: true,
   },
+  isConfirmed: {
+    type: Boolean,
+    required: true,
+  },
   friends: {
     type: [mongoose.SchemaTypes.ObjectId],
     required: false,

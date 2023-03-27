@@ -9,5 +9,6 @@ export function addAccountInDatabase(
     username,
     password,
     email,
+    isConfirmed: false,
   });
 }

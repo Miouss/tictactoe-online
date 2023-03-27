@@ -7,20 +7,19 @@ export function verifyJWT(
   res: Response,
   next: NextFunction
 ): void {
-  const { token } = req.query ?? req.cookies;
+  const isQuery = req.query !== undefined;
+
+  const { token } = isQuery ? req.query : req.cookies;
   const { ACCESS_JWT_SECRET } = process.env;
 
-  let decodedToken = decodeJWT(
-    token as string,
-    ACCESS_JWT_SECRET as string
-  );
+  let decodedToken = decodeJWT(token as string, ACCESS_JWT_SECRET as string);
 
   const needRefresh = decodedToken === null;
 
-  if (needRefresh) {
+  if (needRefresh && !isQuery) {
     const { refreshToken } = req.cookies;
     const newToken = refreshJWT(refreshToken);
-
+    console.log("newToken", newToken);
     decodedToken = decodeJWT(newToken, ACCESS_JWT_SECRET as string);
   }
 
