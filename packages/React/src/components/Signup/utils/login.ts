@@ -19,7 +19,7 @@ export async function login(
     password,
   });
 
-  const url = "http://localhost:3001/api/account/login";
+  const url = "http://localhost:3001/api/login";
   const options = { method, headers, body, credentials };
 
   try {

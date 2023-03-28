@@ -6,7 +6,7 @@ import { createServer } from "http";
 import { Server, Socket } from "socket.io";
 import { io as client } from "socket.io-client";
 import { Player } from "@types";
-import { account } from "@routes";
+import { account, login } from "@routes";
 
 import * as dotenv from "dotenv";
 import { wait } from "@utils";
@@ -30,6 +30,7 @@ export async function startServer(): Promise<number> {
   app.use(cookieParser());
 
   app.use("/api/account", account);
+  app.use("/api/login", login);
   app.use(handleError);
 
   const port = await initializeServer();
@@ -38,6 +39,7 @@ export async function startServer(): Promise<number> {
 }
 
 function handleError(err: any, _: Request, res: Response, next: NextFunction) {
+  res.status(err.status || 500);
   res.json({ message: err.message });
 }
 

@@ -7,3 +7,8 @@ export interface Player {
   name: string;
   id: string;
 }
+
+export interface ErrorWithStatus {
+  status: number;
+  message: string;
+}

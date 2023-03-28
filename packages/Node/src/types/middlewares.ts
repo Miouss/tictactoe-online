@@ -5,3 +5,9 @@ export interface TokenRequest extends Request {
   token?: string;
   refreshToken?: string;
 }
+
+export interface AccountBody {
+  username: string;
+  password: string;
+  email: string;
+}

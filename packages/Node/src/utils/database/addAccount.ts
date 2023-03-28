@@ -1,6 +1,6 @@
 import { Account } from "@database";
 
-export function addAccountInDatabase(
+export function addAccount(
   username: string,
   password: string,
   email: string

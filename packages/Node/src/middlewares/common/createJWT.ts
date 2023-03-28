@@ -1,6 +1,5 @@
 import { Response, NextFunction } from "express";
-import { AccountBody } from "./types";
-import { TokenRequest } from "@types";
+import { AccountBody, TokenRequest } from "@types";
 import { getJWT } from "@utils";
 
 export function createJWT(

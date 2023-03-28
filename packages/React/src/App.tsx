@@ -19,7 +19,7 @@ export default function App() {
   useEffect(() => {
     const method = "POST";
     const credentials = "include" as RequestCredentials;
-    const url = "http://localhost:3001/api/account/login/refresh";
+    const url = "http://localhost:3001/api/login/refresh";
     const options = { method, credentials };
 
     const test = async () => {
@@ -39,7 +39,7 @@ export default function App() {
   const logout = async () => {
     const method = "DELETE";
     const credentials = "include" as RequestCredentials;
-    const url = "http://localhost:3001/api/account/login";
+    const url = "http://localhost:3001/api/login";
     const options = { method, credentials };
 
     try {
