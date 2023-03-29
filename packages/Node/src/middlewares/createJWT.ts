@@ -4,7 +4,7 @@ import { getJWT } from "@utils";
 
 export function createJWT(
   req: TokenRequest,
-  res: Response,
+  _: Response,
   next: NextFunction
 ) {
   const { username } = req.body as AccountBody;

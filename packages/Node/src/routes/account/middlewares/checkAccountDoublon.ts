@@ -5,7 +5,7 @@ import { AccountAlreadyExistsError } from "@classes";
 
 export async function checkAccountDoublon(
   req: Request,
-  res: Response,
+  _: Response,
   next: NextFunction
 ) {
   const { username } = req.body as AccountBody;

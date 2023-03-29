@@ -1,14 +1,12 @@
+import { Router } from "express";
 import {
   verifyCredentials,
-  createJWT,
   setJWTCookies,
-  sendJWT,
-  verifyJWT,
-  acceptReconnection,
   deleteJWTCookies,
-} from "@middlewares";
-import { Router } from "express";
-import { verifyConfirmedAccount } from "middlewares/login/verifyConfirmedAccount";
+  verifyConfirmedAccount,
+  acceptReconnection,
+} from "./middlewares";
+import { createJWT, sendJWT, verifyJWT } from "@middlewares";
 
 const login = Router();
 

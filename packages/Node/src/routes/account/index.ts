@@ -1,13 +1,10 @@
 import { Router } from "express";
-
 import {
   checkAccountDoublon,
-  createAccountInDatabase,
-  verifyJWT,
   confirmAccount,
-  sendJWT,
-  createJWT,
-} from "@middlewares";
+  createAccountInDatabase,
+} from "./middlewares";
+import { verifyJWT, sendJWT, createJWT } from "@middlewares";
 
 const account = Router();
 

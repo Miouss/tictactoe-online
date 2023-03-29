@@ -4,7 +4,7 @@ import { AccountBody } from "@types";
 
 export async function createAccountInDatabase(
   req: Request,
-  res: Response,
+  _: Response,
   next: NextFunction
 ) {
   const { username, password, email } = req.body as AccountBody;

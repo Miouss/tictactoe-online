@@ -7,15 +7,15 @@ import { Server, Socket } from "socket.io";
 import { io as client } from "socket.io-client";
 import { Player } from "@types";
 import { account, login } from "@routes";
-
-import * as dotenv from "dotenv";
 import { wait } from "@utils";
-dotenv.config();
+
+import { config } from "dotenv";
+config();
 
 const app = express();
 const httpServer = createServer(app);
 const corsOptions = {
-  origin: "http://localhost:5173",
+  origin: process.env.URL_ORIGIN,
   credentials: true,
 };
 
@@ -25,12 +25,14 @@ export const io = new Server(httpServer, {
 
 export async function startServer(): Promise<number> {
   app.use(cors(corsOptions));
+  
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
   app.use(cookieParser());
 
   app.use("/api/account", account);
   app.use("/api/login", login);
+
   app.use(handleError);
 
   const port = await initializeServer();

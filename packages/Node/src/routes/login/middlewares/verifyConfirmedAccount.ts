@@ -4,7 +4,7 @@ import { AccountNotConfirmedError } from "@classes";
 
 export async function verifyConfirmedAccount(
   req: Request,
-  res: Response,
+  _: Response,
   next: NextFunction
 ) {
   const { username } = req.body;

@@ -6,7 +6,7 @@ export function verifyJWT(
   req: TokenRequest,
   res: Response,
   next: NextFunction
-): void {
+) {
   const isQuery = req.query !== undefined;
 
   const { token } = isQuery ? req.query : req.cookies;

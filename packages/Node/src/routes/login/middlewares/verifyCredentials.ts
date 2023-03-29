@@ -5,7 +5,7 @@ import { AccountNotFoundError } from "@classes";
 
 export async function verifyCredentials(
   req: Request,
-  res: Response,
+  _: Response,
   next: NextFunction
 ) {
   const { username, password } = req.body as AccountBody;
