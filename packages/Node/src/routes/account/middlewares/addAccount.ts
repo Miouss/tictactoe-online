@@ -1,8 +1,8 @@
 import { Request, Response, NextFunction } from "express";
-import { addAccount } from "@utils";
+import { createAccount } from "@utils";
 import { AccountBody } from "@types";
 
-export async function createAccountInDatabase(
+export async function addAccount(
   req: Request,
   _: Response,
   next: NextFunction
@@ -10,7 +10,7 @@ export async function createAccountInDatabase(
   const { username, password, email } = req.body as AccountBody;
 
   try {
-    await addAccount(username, password, email);
+    await createAccount(username, password, email);
     next();
   } catch (err) {
     next(err);

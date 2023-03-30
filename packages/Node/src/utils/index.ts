@@ -9,10 +9,10 @@ export * from "./tests/mockLobby";
 export * from "./tests/mockPlayers";
 
 // database
-export * from "./database/addAccount";
+export * from "./database/createAccount";
 export * from "./database/findAccount";
 export * from "./database/getAccount";
-export * from "./database/updateAccount";
+export * from "./database/deleteAccount";
 
 // misc
 export * from "./misc/wait";

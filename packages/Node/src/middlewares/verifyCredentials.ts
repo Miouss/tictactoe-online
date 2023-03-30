@@ -14,7 +14,7 @@ export async function verifyCredentials(
     const isAccountFound = await findAccountByCredentials(username, password);
 
     if (!isAccountFound) throw new AccountNotFoundError();
-
+    
     next();
   } catch (err) {
     next(err);

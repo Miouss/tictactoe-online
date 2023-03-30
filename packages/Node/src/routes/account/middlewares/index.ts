@@ -1,3 +1,4 @@
 export * from "./checkAccountDoublon";
 export * from "./confirmAccount";
-export * from "./createAccountInDatabase";
+export * from "./addAccount";
+export * from "./removeAccount";
