@@ -111,7 +111,6 @@ export function Lobby({ playerName, setPlayerSign, setHasGameStarted }: Props) {
         currentPlayer={currentPlayer}
       />
       <Actions>
-        <label>{currentPlayer.name}</label>
         {hasJoinedLobby ? (
           <ButtonLeaveLobby setLobbyTriggerAction={setLobbyTriggerAction} />
         ) : (

@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Tictactoe, Lobby, Signup } from "./components";
+import { Tictactoe, Lobby, Signup, PlayerMenu } from "./components";
 import { SideSign } from "@types";
 import { fetchServer } from "./utils";
 
@@ -22,46 +22,37 @@ export default function App() {
     const url = "http://localhost:3001/api/login/refresh";
     const options = { method, credentials };
 
-    const test = async () => {
+    const reconnect = async () => {
       try {
         const data = await fetchServer(url, options);
         const { username } = data;
-        console.log(data);
+        console.log("reconnected");
         setPlayerName(username);
       } catch (err) {
+        console.log("not reconnected");
         console.log(err);
       }
     };
 
-    test();
+    reconnect();
   }, []);
-
-  const logout = async () => {
-    const method = "DELETE";
-    const credentials = "include" as RequestCredentials;
-    const url = "http://localhost:3001/api/login";
-    const options = { method, credentials };
-
-    try {
-      const data = await fetchServer(url, options);
-      setPlayerName("");
-      setPlayerSign(undefined);
-    } catch (err) {
-      console.log(err);
-    }
-  };
 
   return (
     <div style={style}>
       {isPlayerConnected ? (
         <>
           {hasGameStarted && <Tictactoe playerSign={playerSign} />}
-          <Lobby
+          <PlayerMenu
             playerName={playerName}
+            setPlayerName={setPlayerName}
             setPlayerSign={setPlayerSign}
-            setHasGameStarted={setHasGameStarted}
-          />
-          <button onClick={logout}>Disconnect</button>
+          >
+            <Lobby
+              playerName={playerName}
+              setPlayerSign={setPlayerSign}
+              setHasGameStarted={setHasGameStarted}
+            />
+          </PlayerMenu>
         </>
       ) : (
         <Signup setPlayerName={setPlayerName} />

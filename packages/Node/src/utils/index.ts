@@ -16,3 +16,4 @@ export * from "./database/deleteAccount";
 
 // misc
 export * from "./misc/wait";
+export * from "./misc/isObjectEmpty";

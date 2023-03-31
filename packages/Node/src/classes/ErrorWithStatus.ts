@@ -13,6 +13,12 @@ export class AccountNotFoundError extends ErrorWithStatus {
   }
 }
 
+export class CredentialsIncorrectError extends ErrorWithStatus {
+  constructor() {
+    super(404, "Credentials incorrect");
+  }
+}
+
 export class AccountAlreadyConfirmedError extends ErrorWithStatus {
   constructor() {
     super(409, "Account already confirmed");
@@ -31,3 +37,8 @@ export class AccountAlreadyExistsError extends ErrorWithStatus {
   }
 }
 
+export class TokenInvalidError extends ErrorWithStatus {
+  constructor() {
+    super(403, "Token invalid");
+  }
+}
