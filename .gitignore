@@ -2,4 +2,4 @@ node_modules/
 dist/
 packages/Node/src/assets/lobbies/*
 .env
-routes.rest
+requests/
