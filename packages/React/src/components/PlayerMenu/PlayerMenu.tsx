@@ -1,7 +1,9 @@
 import { Dispatch, SetStateAction } from "react";
-import { fetchServer } from "../../utils";
-import { Container } from "./styles";
 import { SideSign } from "@types";
+import { PlayerMenuLogoutButton as LogoutButton } from "./PlayerMenuLogoutButton";
+import { PlayerMenuDelAccountButton as DelAccountButton } from "./PlayerMenuDelAccountButton";
+import { PlayerMenuChangePasswordButton as ChangePasswordButton } from "./PlayerMenuChangePasswordButton";
+import { FlexBox } from "../../styles";
 
 interface Props {
   playerName: string;
@@ -16,48 +18,22 @@ export function PlayerMenu({
   setPlayerSign,
   children,
 }: Props) {
-  const logout = async () => {
-    const method = "DELETE";
-    const credentials = "include" as RequestCredentials;
-    const url = "http://localhost:3001/api/login";
-    const options = { method, credentials };
-
-    try {
-      const data = await fetchServer(url, options);
-      setPlayerName("");
-      setPlayerSign(undefined);
-    } catch (err) {
-      console.error(err);
-    }
-  };
-
-  const delAccount = async () => {
-    const username = playerName;
-    let password = prompt("Enter your password to delete your account");
-
-    const method = "DELETE";
-    const headers = { "Content-Type": "application/json" };
-    const credentials = "include" as RequestCredentials;
-    const body = JSON.stringify({ username, password });
-    const url = "http://localhost:3001/api/account";
-    const options = { method, headers, body, credentials };
-
-    try {
-      const data = await fetchServer(url, options);
-      setPlayerName("");
-      setPlayerSign(undefined);
-      alert(data.message);
-    } catch (err: any) {
-        alert(err.message);
-    }
-  };
-
   return (
-    <Container>
+    <FlexBox direction="column" gap="2rem">
       <label style={{ textAlign: "center" }}>{playerName}</label>
       {children}
-      <button onClick={delAccount}>Delete Account</button>
-      <button onClick={logout}>Disconnect</button>
-    </Container>
+      <FlexBox direction="column">
+        <ChangePasswordButton playerName={playerName} />
+        <LogoutButton
+          setPlayerName={setPlayerName}
+          setPlayerSign={setPlayerSign}
+        />
+        <DelAccountButton
+          playerName={playerName}
+          setPlayerName={setPlayerName}
+          setPlayerSign={setPlayerSign}
+        />
+      </FlexBox>
+    </FlexBox>
   );
 }

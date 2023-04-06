@@ -2,8 +2,9 @@ import { Dispatch, SetStateAction, useState } from "react";
 import { SignupActionButton as Button } from "./SignupActionButton";
 import { SignupLogin as FormLogin } from "./SignupLogin";
 import { SignupCreateAccount as FormCreateAccount } from "./SignupCreateAccount";
-import { Container, Actions, ConditionnalSubMenu } from "./styles";
+import { Actions, ConditionnalSubMenu } from "./styles";
 import { SubMenu } from "./types";
+import { FlexBox } from "../../styles";
 
 export function Signup({
   setPlayerName,
@@ -39,7 +40,7 @@ export function Signup({
   );
 
   return (
-    <Container>
+    <FlexBox direction="column" gap="2rem">
       <Actions>
         <ActionsButtons />
       </Actions>
@@ -50,6 +51,6 @@ export function Signup({
           <FormLogin setPlayerName={setPlayerName} />
         )}
       </ConditionnalSubMenu>
-    </Container>
+    </FlexBox>
   );
 }

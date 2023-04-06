@@ -5,9 +5,10 @@ import { LobbyActionButtonLeaveLobby as ButtonLeaveLobby } from "./LobbyActionBu
 import { LobbyPlayersList as PlayersList } from "./LobbyPlayersList";
 import { socket } from "../../main";
 import { useLobbyListeners } from "./hooks";
-import { Container, Actions } from "./styles";
+import { Actions } from "./styles";
 import { LobbyAction } from "./types";
 import { Player, SideSign } from "@types";
+import { FlexBox } from "../../styles";
 
 interface Props {
   playerName: string;
@@ -104,7 +105,7 @@ export function Lobby({ playerName, setPlayerSign, setHasGameStarted }: Props) {
   }, []);
 
   return (
-    <Container>
+    <FlexBox direction="column" gap="2rem">
       <PlayersList
         joinedLobbyId={joinedLobbyId}
         players={players}
@@ -121,6 +122,6 @@ export function Lobby({ playerName, setPlayerSign, setHasGameStarted }: Props) {
           setJoiningLobbyId={setJoiningLobbyId}
         />
       </Actions>
-    </Container>
+    </FlexBox>
   );
 }
