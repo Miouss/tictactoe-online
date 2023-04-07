@@ -3,9 +3,10 @@ import { socket } from "../../main";
 import { TictactoeBoardSquare as Square } from "./TictactoeBoardSquare";
 import { createBoard, replayGame } from "./utils";
 import { useGameListeners, useGameEmitters, useResetSquares } from "./hooks";
-import { TicTacToe, Board, GameStatus } from "./styles";
+import { Board, GameStatus } from "./styles";
 import { GameIssue, ResetBoard } from "./types";
 import { SideSign } from "@types";
+import { FlexBox } from "../../styles";
 
 interface Props {
   playerSign: SideSign | undefined;
@@ -55,9 +56,9 @@ export function Tictactoe({ playerSign }: Props) {
         )}
       </GameStatus>
 
-      <TicTacToe>
+      <FlexBox justify="center" align="center">
         <Board playing={isGameRunningAndCanPlay}>{handleBoardCreation()}</Board>
-      </TicTacToe>
+      </FlexBox>
     </>
   );
 }
